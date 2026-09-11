@@ -1,126 +1,64 @@
 "use client";
 
-import { motion } from "framer-motion";
+import * as React from "react";
 import { Calendar } from "lucide-react";
-import { LuxuryButton } from "@/components/site/luxury-button";
 import { WhatsAppIcon } from "@/components/site/icons";
-import { EASE_EDITORIAL } from "@/components/site/motion";
 import { BRAND } from "@/lib/content";
 import { assetPath } from "@/lib/utils";
-
-/* ---------------------------------------------------------------
-   AppointmentCTA — large, visually focused conversion section.
-   Full-bleed background image (cta-background.jpg) with a heavy
-   navy overlay (rgba(16,35,63,0.85)) and the .grain texture
-   overlay for visual continuity with the dark sections.
-
-   Centered: eyebrow with gold rules on both sides → .display-1
-   headline → supporting line → two CTAs. NO form. NO clutter.
-   Subtle staggered fade-up entrance for eyebrow → headline →
-   supporting → CTAs.
-   --------------------------------------------------------------- */
-
-const ease = EASE_EDITORIAL;
 
 export function AppointmentCTA() {
   return (
     <section
-      id="appointment"
-      aria-label="Book a consultation at Acharya Dental"
-      className="section relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-[var(--navy)]"
+      id="appointment-cta"
+      aria-label="Ready for a healthier smile"
+      className="py-16 sm:py-20 lg:py-24 bg-white text-[#10233F]"
     >
-      {/* Background image */}
-      <img
-        src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=1800&q=85"
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-      {/* Heavy navy overlay */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[rgba(16,35,63,0.85)]"
-      />
-      {/* Grain texture (matches dark sections) */}
-      <div
-        aria-hidden="true"
-        className="grain absolute inset-0"
-      />
-
-      <div className="container-editorial relative z-10">
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          {/* Eyebrow — gold rules on both sides */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease }}
-            className="flex items-center justify-center gap-3"
-          >
-            <span
-              aria-hidden="true"
-              className="h-px w-10 bg-gradient-to-r from-transparent to-[var(--gold)]"
+      <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-12">
+        <div className="overflow-hidden rounded-3xl bg-[#FAF9F6] border border-gray-200/80 shadow-[0_15px_45px_rgba(0,0,0,0.06)] grid grid-cols-1 lg:grid-cols-12 items-center">
+          {/* Left Side: Authentic Reception Lobby Photo with Backlit Logo Wall (Span 6) */}
+          <div className="lg:col-span-6 relative aspect-[16/10] lg:aspect-auto lg:h-full min-h-[300px] sm:min-h-[380px] overflow-hidden bg-slate-900">
+            <img
+              src={assetPath("/images/acharyadental/t1.jpg")}
+              alt="Acharya Dental reception lobby and lounge in Nungambakkam Chennai"
+              className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105"
+              loading="lazy"
             />
-            <span className="eyebrow eyebrow-light">Begin Your Journey</span>
-            <span
-              aria-hidden="true"
-              className="h-px w-10 bg-gradient-to-l from-transparent to-[var(--gold)]"
-            />
-          </motion.div>
+            {/* Subtle inner shadow / border */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:hidden" />
+          </div>
 
-          {/* Headline */}
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8, ease, delay: 0.08 }}
-            className="display-1 mt-7 text-balance text-white"
-          >
-            Ready For A Healthier,
-            <br className="hidden sm:block" /> More Confident Smile?
-          </motion.h2>
+          {/* Right Side: Consultation Callout matching reference mockup (Span 6) */}
+          <div className="lg:col-span-6 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
+            <h2 className="font-[var(--font-playfair)] text-3xl sm:text-4xl lg:text-[2.6rem] font-bold text-[#10233F] tracking-tight leading-[1.2]">
+              Ready for a Healthier, <br />
+              <span className="text-[#0284C7]">More Confident Smile?</span>
+            </h2>
 
-          {/* Supporting line */}
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease, delay: 0.16 }}
-            className="lead mt-7 max-w-xl text-pretty text-white/70"
-          >
-            Book a consultation with our specialists — in person or virtually.
-          </motion.p>
+            <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
+              Book your consultation with our specialists today. Experience gentle care, cutting-edge technology, and generational trust.
+            </p>
 
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease, delay: 0.24 }}
-            className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
-          >
-            <LuxuryButton
-              as="link"
-              href="#contact"
-              variant="light"
-              size="lg"
-              icon={<Calendar className="h-4 w-4" aria-hidden="true" />}
-            >
-              Book Consultation
-            </LuxuryButton>
-            <LuxuryButton
-              as="link"
-              href={BRAND.whatsappHref}
-              variant="light"
-              size="lg"
-              icon={<WhatsAppIcon className="h-4 w-4" aria-hidden="true" />}
-              ariaLabel="Chat with us on WhatsApp"
-            >
-              WhatsApp Us
-            </LuxuryButton>
-          </motion.div>
+            {/* Action Buttons Row */}
+            <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#0B162A] text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-200 shadow-[0_4px_15px_rgba(212,175,55,0.35)] active:scale-95"
+              >
+                <Calendar className="h-4 w-4" />
+                Book Consultation
+              </a>
+
+              <a
+                href={BRAND.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-white hover:bg-[#F0F9FF] border-2 border-[#0284C7] text-[#0284C7] text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-200 shadow-sm active:scale-95"
+              >
+                <WhatsAppIcon className="h-4 w-4 text-[#0284C7]" />
+                WhatsApp Us
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

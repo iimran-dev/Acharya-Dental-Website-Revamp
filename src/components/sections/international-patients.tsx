@@ -1,148 +1,168 @@
 "use client";
 
-import { Plane, Hotel, CalendarClock, Video, ArrowRight } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import * as React from "react";
+import { Plane, Hotel, CalendarClock, Video, ArrowRight, ShieldCheck, Clock } from "lucide-react";
 import {
-  RevealGroup,
-  RevealItem,
-  ImageReveal,
-} from "@/components/site/motion";
-import { SectionHeading } from "@/components/site/section-heading";
-import { LuxuryButton } from "@/components/site/luxury-button";
-import { INTERNATIONAL_FEATURES } from "@/lib/content";
-import { assetPath } from "@/lib/utils";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { BRAND, INTERNATIONAL_FEATURES } from "@/lib/content";
 
-/* ---------------------------------------------------------------
-   InternationalPatients — luxury medical concierge service.
-   Two-column on desktop:
-     LEFT  — SectionHeading + a 2x2 airy feature grid (no heavy
-             card chrome, just a top hairline rule for editorial
-             rhythm) + a primary "Plan your visit" LuxuryButton.
-     RIGHT — a single tall premium lifestyle image in aspect-[4/5]
-             framed by the same L-shaped gold corner accents used
-             in heritage.tsx, with a navy-scrim caption overlay
-             ("Concierge support, end to end"). The single-image
-             collage option was chosen over a stacked pair because
-             it reads more refined and editorial.
-
-   Visual language inherited from Tasks 4-a / 4-b:
-     • warm-white section background
-     • gold-rule eyebrow pattern (handled by SectionHeading)
-     • .display-2 navy heading
-     • thin gold OUTLINE lucide icons (strokeWidth 1.5,
-       text-[var(--gold)]) — same restraint as the WhyAcharya icons
-     • L-shaped gold corner accents on the image — matches heritage.tsx
-     • navy-scrim caption overlay — matches heritage.tsx
-   --------------------------------------------------------------- */
-
-/* Map content icon names → lucide-react components */
-const ICONS: Record<string, LucideIcon> = {
-  Plane,
-  Hotel,
-  CalendarClock,
-  Video,
-};
-
-type Feature = (typeof INTERNATIONAL_FEATURES)[number];
-
-function FeatureBlock({ feature }: { feature: Feature }) {
-  const Icon = ICONS[feature.icon] ?? Plane;
-
-  return (
-    <div className="border-t border-[var(--border)] pt-5">
-      {/* Gold outline icon — elegant, thin stroke, no badge */}
-      <Icon
-        className="h-7 w-7 text-[var(--gold)]"
-        strokeWidth={1.5}
-        aria-hidden="true"
-      />
-      <h3 className="mt-4 font-[var(--font-inter)] text-base font-medium leading-snug text-[var(--navy)]">
-        {feature.title}
-      </h3>
-      <p className="mt-2 text-pretty text-[0.875rem] leading-[1.6] text-[var(--ink-soft)]">
-        {feature.description}
-      </p>
-    </div>
-  );
-}
+const SERVICES = [
+  {
+    title: "Airport Pickup",
+    desc: "Assistance on arrival at Chennai International Airport (MAA).",
+    icon: Plane,
+  },
+  {
+    title: "Accommodation Assistance",
+    desc: "Partnered stays and hotels near our Nungambakkam clinic.",
+    icon: Hotel,
+  },
+  {
+    title: "Fast-track Treatment",
+    desc: "Pre-scheduled appointment blocks planned around travel dates.",
+    icon: CalendarClock,
+  },
+  {
+    title: "Virtual Consultation",
+    desc: "Remote case review and treatment roadmap before departure.",
+    icon: Video,
+  },
+];
 
 export function InternationalPatients() {
+  const [modalOpen, setModalOpen] = React.useState(false);
+
   return (
     <section
       id="international"
-      aria-label="International patients — concierge care for patients travelling from abroad"
-      className="section bg-[var(--warm-white)]"
+      aria-label="International Patients"
+      className="relative overflow-hidden bg-[#071120] text-white"
     >
-      <div className="container-editorial">
-        <RevealGroup className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          {/* LEFT — heading + 2x2 features + CTA */}
-          <div>
-            <SectionHeading
-              eyebrow="INTERNATIONAL PATIENTS"
-              title="Concierge care, for patients travelling from abroad."
-              lead="From the moment you land in Chennai to the day you leave, our team handles the logistics so you can focus on your treatment and recovery."
-            />
+      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[500px]">
+        {/* Left Side: Dark Navy Information & Concierge Services (Span 7) */}
+        <div className="lg:col-span-7 flex flex-col justify-center px-6 py-16 sm:px-10 lg:px-16 xl:px-20 z-10">
+          <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-[#38BDF8] uppercase">
+            International Patients
+          </span>
 
-            {/* 2x2 airy feature grid (sm+) */}
-            <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
-              {INTERNATIONAL_FEATURES.map((f) => (
-                <RevealItem key={f.title}>
-                  <FeatureBlock feature={f} />
-                </RevealItem>
-              ))}
-            </div>
+          <h2 className="font-[var(--font-playfair)] text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mt-3 leading-tight">
+            Your Smile. Our Expertise. <br />
+            <span className="text-[#F1E5D1]">Seamless Experience.</span>
+          </h2>
 
-            {/* CTA */}
-            <RevealItem className="mt-12">
-              <LuxuryButton
-                as="link"
-                href="#contact"
-                variant="primary"
-                size="md"
-                iconRight={
-                  <ArrowRight
-                    className="h-4 w-4"
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                  />
-                }
-              >
-                Plan your visit
-              </LuxuryButton>
-            </RevealItem>
+          <p className="mt-4 text-sm sm:text-base text-white/80 max-w-lg leading-relaxed">
+            Complete support for your dental journey in Chennai. From preliminary virtual consultations to airport reception and customized treatment timelines.
+          </p>
+
+          {/* 4 Feature Icons Row / Grid */}
+          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6">
+            {SERVICES.map((s, idx) => {
+              const Icon = s.icon;
+              return (
+                <div key={idx} className="flex flex-col items-start gap-2.5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]">
+                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                  </div>
+                  <span className="text-xs font-semibold text-white/90 leading-snug">
+                    {s.title}
+                  </span>
+                </div>
+              );
+            })}
           </div>
+        </div>
 
-          {/* RIGHT — single premium image, gold corner accent + caption */}
-          <RevealItem className="relative">
-            <div className="relative">
-              {/* L-shaped gold corner accents (top-left + bottom-right) */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute -left-2 -top-2 z-10 h-10 w-10 border-l border-t border-[var(--gold)]"
-              />
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute -bottom-2 -right-2 z-10 h-10 w-10 border-b border-r border-[var(--gold)]"
-              />
+        {/* Right Side: Airplane Wing Golden Sunset Photo & Know More Button (Span 5) */}
+        <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-full flex items-end justify-end p-8 sm:p-12 overflow-hidden">
+          {/* Airplane Wing Photographic Background */}
+          <img
+            src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1600&q=85"
+            alt="International flight wing over golden sunset clouds"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            loading="lazy"
+          />
 
-              <ImageReveal
-                src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=85"
-                alt="A concierge coordinator assisting an international dental patient with travel and accommodation arrangements at Acharya Dental"
-                className="aspect-[4/5] w-full"
-              />
+          {/* Gradient overlay to smoothly bridge left dark navy */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#071120] via-[#071120]/30 to-transparent lg:block" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-              {/* Caption overlay */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-[rgba(16,35,63,0.78)] via-[rgba(16,35,63,0.18)] to-transparent p-5 pt-12"
+          {/* Know More CTA Button matching reference mockup */}
+          <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+            <DialogTrigger asChild>
+              <button
+                type="button"
+                className="relative z-10 inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#071120] font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95"
               >
-                <span className="font-[var(--font-inter)] text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-white/85">
-                  Concierge support, end to end
-                </span>
+                Know More
+              </button>
+            </DialogTrigger>
+
+            <DialogContent className="max-w-2xl bg-[#081225] border border-white/15 text-white p-6 sm:p-8">
+              <DialogTitle className="font-[var(--font-playfair)] text-2xl sm:text-3xl font-bold text-white">
+                International Patient Dental Tourism Concierge
+              </DialogTitle>
+              <div className="text-xs font-semibold text-[#38BDF8] uppercase tracking-wider mt-1">
+                Chennai, Tamil Nadu, India · Airport Code: MAA
               </div>
-            </div>
-          </RevealItem>
-        </RevealGroup>
+
+              <DialogDescription className="text-sm text-white/80 mt-3 leading-relaxed">
+                Acharya Dental welcomes patients from the United States, United Kingdom, Singapore, Middle East, Australia, and worldwide. Our dedicated international desk ensures end-to-end comfort from pre-travel planning to post-treatment care.
+              </DialogDescription>
+
+              <div className="mt-6 space-y-4 text-xs sm:text-sm text-white/85">
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <h4 className="font-bold text-[#D4AF37] uppercase tracking-wider text-xs mb-1.5">
+                    1. Pre-Travel Digital Planning
+                  </h4>
+                  <p className="text-white/75">
+                    Share your dental X-rays, photos, and records via WhatsApp or email. Dr. Varun Acharya and our team will prepare a preliminary diagnosis, estimated duration of stay, and schedule prior to your booking.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <h4 className="font-bold text-[#D4AF37] uppercase tracking-wider text-xs mb-1.5">
+                    2. Arrival &amp; Local Transportation
+                  </h4>
+                  <p className="text-white/75">
+                    Complimentary airport reception from Chennai International Airport (MAA) and assistance with chauffeur or ground transport to your accommodation in centrally located Nungambakkam.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <h4 className="font-bold text-[#D4AF37] uppercase tracking-wider text-xs mb-1.5">
+                    3. Fast-Track Treatment &amp; Recovery
+                  </h4>
+                  <p className="text-white/75">
+                    Procedures are scheduled in dedicated blocks with our in-house dental laboratory to ensure rapid turnaround times and ample post-operative follow-up before your flight home.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+                <a
+                  href={BRAND.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-[#25D366] hover:underline"
+                >
+                  Chat with International Concierge on WhatsApp
+                </a>
+                <a
+                  href="#contact"
+                  onClick={() => setModalOpen(false)}
+                  className="px-6 py-2.5 rounded-lg bg-[#D4AF37] text-[#071120] text-xs font-bold uppercase tracking-wider hover:bg-[#E5BE4A]"
+                >
+                  Book Consultation
+                </a>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     </section>
   );

@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Calendar } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, Phone, ChevronDown, Calendar, ArrowRight } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -12,56 +12,26 @@ import {
   SheetClose,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { LuxuryButton } from "@/components/site/luxury-button";
 import { WhatsAppIcon } from "@/components/site/icons";
-import { EASE_EDITORIAL } from "@/components/site/motion";
-import { NAV_LINKS, BRAND } from "@/lib/content";
-import { cn } from "@/lib/utils";
+import { NAV_LINKS, BRAND, SIGNATURE_TREATMENTS } from "@/lib/content";
+import { cn, assetPath } from "@/lib/utils";
 
-/* ---------------------------------------------------------------
-   Navbar — light luxury theme. Warm white / white glassmorphism
-   with deep navy typography, gold monogram, and sticky header.
-   --------------------------------------------------------------- */
+const SCROLL_THRESHOLD = 40;
 
-const SCROLL_THRESHOLD = 80;
+export function Navbar() {
+  const [scrolled, setScrolled] = React.useState(false);
+  const [treatmentsOpen, setTreatmentsOpen] = React.useState(false);
 
-function Monogram() {
-  return (
-    <span
-      aria-hidden="true"
-      className="grid h-8 w-8 place-items-center rounded-md border border-[var(--gold)] bg-[var(--navy)] text-[var(--gold)] font-[var(--font-playfair)] text-sm font-semibold leading-none shadow-sm"
-    >
-      A
-    </span>
-  );
-}
+  React.useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > SCROLL_THRESHOLD);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-function Wordmark({ scrolled }: { scrolled: boolean }) {
-  return (
-    <Link
-      href="#top"
-      aria-label="Acharya Dental — back to top"
-      className={cn(
-        "group inline-flex items-center gap-3 rounded-md transition-opacity",
-      )}
-    >
-      <Monogram />
-      <span
-        className={cn(
-          "font-[var(--font-playfair)] tracking-[0.28em] font-semibold text-[var(--navy)] transition-all duration-500",
-          scrolled
-            ? "text-[0.78rem] sm:text-[0.82rem]"
-            : "text-[0.82rem] sm:text-[0.88rem]",
-        )}
-      >
-        ACHARYA DENTAL
-      </span>
-    </Link>
-  );
-}
-
-function DesktopNav({ activeId }: { activeId: string }) {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("#")) {
       e.preventDefault();
       const el = document.querySelector(href);
@@ -73,245 +43,289 @@ function DesktopNav({ activeId }: { activeId: string }) {
   };
 
   return (
-    <nav aria-label="Primary" className="hidden flex-1 items-center justify-center px-6 lg:flex">
-      <ul className="flex items-center gap-5 xl:gap-8 2xl:gap-10">
-        {NAV_LINKS.map((link) => {
-          const targetId = link.href.replace("#", "");
-          const isActive = activeId === targetId;
-
-          return (
-            <li key={link.href} className="shrink-0">
-              <a
-                href={link.href}
-                onClick={(e) => handleClick(e, link.href)}
-                className={cn(
-                  "relative py-1 text-[0.74rem] font-semibold uppercase tracking-[0.14em] transition-colors duration-300 xl:text-[0.78rem] xl:tracking-[0.16em]",
-                  isActive
-                    ? "text-[var(--gold)] font-bold"
-                    : "text-[var(--navy)] hover:text-[var(--gold)]",
-                )}
-              >
-                {link.label}
-                {isActive && (
-                  <motion.span
-                    layoutId="activeNavIndicator"
-                    className="absolute inset-x-0 -bottom-1 h-[2px] bg-[var(--gold)] rounded-full"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
-  );
-}
-
-
-function MobileMenu({ activeId }: { activeId: string }) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    setOpen(false);
-    if (href.startsWith("#")) {
-      e.preventDefault();
-      setTimeout(() => {
-        const el = document.querySelector(href);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth" });
-          window.history.pushState(null, "", href);
-        }
-      }, 150);
-    }
-  };
-
-  return (
-    <div className="lg:hidden">
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <button
-            type="button"
-            aria-label="Open menu"
-            className="grid h-10 w-10 place-items-center rounded-full border border-[var(--navy)]/20 text-[var(--navy)] transition-colors hover:border-[var(--gold)] hover:text-[var(--gold)]"
-          >
-            <Menu className="h-4 w-4" aria-hidden="true" />
-          </button>
-        </SheetTrigger>
-
-        <SheetContent
-          side="right"
-          className="w-[88vw] max-w-sm border-l border-[var(--border)] bg-[var(--warm-white)] text-[var(--navy)] sm:max-w-sm"
-        >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Menu</SheetTitle>
-          </SheetHeader>
-
-          <div className="flex h-full flex-col px-6 pb-10 pt-8">
-            {/* Top: wordmark + close */}
-            <div className="flex items-center justify-between">
-              <span className="font-[var(--font-playfair)] text-sm font-semibold tracking-[0.28em] text-[var(--navy)]">
-                ACHARYA DENTAL
-              </span>
-              <SheetClose
-                aria-label="Close menu"
-                className="grid h-9 w-9 place-items-center rounded-full border border-[var(--navy)]/20 text-[var(--navy)] transition-colors hover:border-[var(--gold)] hover:text-[var(--gold)]"
-              >
-                <span aria-hidden="true" className="text-lg leading-none">
-                  &times;
-                </span>
-              </SheetClose>
-            </div>
-
-            {/* Gold rule */}
-            <div className="mt-8 h-px w-full bg-gradient-to-r from-[var(--gold)] via-[var(--gold)]/30 to-transparent" />
-
-            {/* Nav links */}
-            <nav aria-label="Mobile primary" className="mt-8 flex-1">
-              <ul className="flex flex-col gap-1">
-                {NAV_LINKS.map((link, i) => {
-                  const targetId = link.href.replace("#", "");
-                  const isActive = activeId === targetId;
-
-                  return (
-                    <li key={link.href}>
-                      <motion.div
-                        initial={{ opacity: 0, x: 24 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          duration: 0.5,
-                          ease: EASE_EDITORIAL,
-                          delay: 0.06 * i,
-                        }}
-                      >
-                        <a
-                          href={link.href}
-                          onClick={(e) => handleClick(e, link.href)}
-                          className={cn(
-                            "flex items-center justify-between py-3 font-[var(--font-playfair)] text-xl font-medium transition-colors",
-                            isActive
-                              ? "text-[var(--gold)] font-semibold"
-                              : "text-[var(--navy)] hover:text-[var(--gold)]",
-                          )}
-                        >
-                          <div>
-                            <span className="mr-3 text-[0.7rem] font-semibold text-[var(--gold)]">
-                              0{i + 1}
-                            </span>
-                            {link.label}
-                          </div>
-                          {isActive && (
-                            <span className="h-2 w-2 rounded-full bg-[var(--gold)]" />
-                          )}
-                        </a>
-                      </motion.div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
-
-            {/* CTAs at bottom */}
-            <div className="mt-auto flex flex-col gap-3">
-              <LuxuryButton
-                as="link"
-                href="#contact"
-                variant="gold"
-                size="md"
-                fullWidth
-                icon={<Calendar className="h-4 w-4" aria-hidden="true" />}
-                onClick={() => setOpen(false)}
-              >
-                Book Appointment
-              </LuxuryButton>
-              <LuxuryButton
-                as="link"
-                href={BRAND.whatsappHref}
-                variant="primary"
-                size="md"
-                fullWidth
-                icon={<WhatsAppIcon className="h-4 w-4" aria-hidden="true" />}
-                onClick={() => setOpen(false)}
-                ariaLabel="Chat on WhatsApp"
-              >
-                WhatsApp Now
-              </LuxuryButton>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-    </div>
-  );
-}
-
-export function Navbar() {
-  const [scrolled, setScrolled] = React.useState(false);
-  const [activeId, setActiveId] = React.useState<string>("");
-
-  React.useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > SCROLL_THRESHOLD);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  React.useEffect(() => {
-    const sectionIds = NAV_LINKS.map((link) => link.href.replace("#", ""));
-    const observerCallback: IntersectionObserverCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveId(entry.target.id);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, {
-      root: null,
-      rootMargin: "-20% 0px -60% 0px",
-      threshold: 0,
-    });
-
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <motion.header
-      initial={false}
-      animate={{
-        backgroundColor: scrolled
-          ? "rgba(255, 255, 255, 0.95)"
-          : "rgba(248, 248, 246, 0.92)",
-        backdropFilter: "blur(16px)",
-        boxShadow: scrolled
-          ? "0 10px 30px -15px rgba(16, 35, 63, 0.12)"
-          : "0 2px 10px -5px rgba(16, 35, 63, 0.05)",
-      }}
-      transition={{ duration: 0.4, ease: EASE_EDITORIAL }}
-      className="fixed inset-x-0 top-0 z-50 border-b border-[var(--border)]"
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        scrolled
+          ? "bg-[#071120]/95 backdrop-blur-md border-b border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.35)] py-2"
+          : "bg-[#081225] sm:bg-[#081225]/95 sm:backdrop-blur-sm border-b border-white/10 py-2.5 sm:py-3"
+      )}
       aria-label="Site header"
     >
-      <div
-        className={cn(
-          "mx-auto flex w-full max-w-[1536px] items-center justify-between px-6 lg:px-10 xl:px-12 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-          scrolled ? "h-16" : "h-20",
-        )}
-      >
-        <div className="shrink-0">
-          <Wordmark scrolled={scrolled} />
+      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8 xl:px-10">
+        {/* =========================================================
+            1. Left: Official Brand Logo (Compact & Crisp)
+            ========================================================= */}
+        <Link
+          href="#top"
+          onClick={(e) => handleNavClick(e, "#top")}
+          className="flex items-center shrink-0 focus:outline-none group pr-2"
+          aria-label="Acharya Dental — Return to top"
+        >
+          <img
+            src={assetPath("/images/acharyadental/officail-logo-light.png")}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = assetPath(
+                "/images/acharyadental/officail-logo.png"
+              );
+            }}
+            alt="Acharya Dental - Advanced Dentistry. Simplified."
+            className={cn(
+              "w-auto object-contain transition-all duration-300 group-hover:opacity-90",
+              scrolled ? "h-8 sm:h-9" : "h-8 sm:h-9 lg:h-10"
+            )}
+            loading="eager"
+          />
+        </Link>
+
+        {/* =========================================================
+            2. Center: Navigation Links (Small, Evenly Spread, Single-Line)
+            ========================================================= */}
+        <nav
+          aria-label="Primary navigation"
+          className="hidden lg:flex items-center justify-center gap-3.5 xl:gap-5 2xl:gap-7 flex-1 mx-2 xl:mx-4"
+        >
+          {NAV_LINKS.map((link) => {
+            if (link.hasDropdown) {
+              return (
+                <div
+                  key={link.label}
+                  className="relative shrink-0"
+                  onMouseEnter={() => setTreatmentsOpen(true)}
+                  onMouseLeave={() => setTreatmentsOpen(false)}
+                >
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className="group inline-flex items-center gap-1 py-1.5 text-[11px] xl:text-[11.5px] 2xl:text-xs font-semibold tracking-[0.12em] uppercase text-white/85 hover:text-[#D4AF37] transition-colors whitespace-nowrap"
+                  >
+                    <span>{link.label}</span>
+                    <ChevronDown
+                      className={cn(
+                        "h-3 w-3 text-white/50 transition-transform duration-200 group-hover:text-[#D4AF37]",
+                        treatmentsOpen && "rotate-180 text-[#D4AF37]"
+                      )}
+                    />
+                  </a>
+
+                  {/* Treatments Dropdown Menu */}
+                  <AnimatePresence>
+                    {treatmentsOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 5, scale: 0.98 }}
+                        transition={{ duration: 0.16, ease: "easeOut" }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 w-64 rounded-xl bg-[#08172E]/98 border border-white/12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2.5 z-50 backdrop-blur-2xl"
+                      >
+                        <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-white/8 mb-1">
+                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[#38BDF8]">
+                            Signature Procedures
+                          </span>
+                          <span className="text-[0.58rem] text-white/40 font-mono">
+                            4 Core
+                          </span>
+                        </div>
+
+                        <div className="space-y-0.5">
+                          {SIGNATURE_TREATMENTS.map((t) => (
+                            <a
+                              key={t.id}
+                              href="#treatments"
+                              onClick={(e) => {
+                                setTreatmentsOpen(false);
+                                handleNavClick(e, "#treatments");
+                              }}
+                              className="group/item flex flex-col px-2.5 py-1.5 rounded-lg text-left hover:bg-white/8 transition-colors"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-semibold text-white group-hover/item:text-[#D4AF37] transition-colors whitespace-nowrap">
+                                  {t.name}
+                                </span>
+                                <ArrowRight className="h-3 w-3 text-white/0 -translate-x-1 group-hover/item:text-[#D4AF37] group-hover/item:translate-x-0 group-hover/item:opacity-100 transition-all" />
+                              </div>
+                              <span className="text-[0.65rem] text-white/50 line-clamp-1 mt-0.5">
+                                {t.tagline}
+                              </span>
+                            </a>
+                          ))}
+                        </div>
+
+                        <div className="mt-1.5 pt-1.5 border-t border-white/8 px-1">
+                          <a
+                            href="#treatments"
+                            onClick={(e) => {
+                              setTreatmentsOpen(false);
+                              handleNavClick(e, "#treatments");
+                            }}
+                            className="block w-full py-1 text-center text-[0.65rem] font-bold uppercase tracking-wider text-[#38BDF8] hover:text-white transition-colors whitespace-nowrap"
+                          >
+                            Explore All Services &rarr;
+                          </a>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            }
+
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="shrink-0 whitespace-nowrap py-1.5 text-[11px] xl:text-[11.5px] 2xl:text-xs font-semibold tracking-[0.12em] uppercase text-white/85 hover:text-[#D4AF37] transition-colors"
+              >
+                {link.label}
+              </a>
+            );
+          })}
+        </nav>
+
+        {/* =========================================================
+            3. Right: Contact Direct Lines & Action CTA (Single-Line & Spaced)
+            ========================================================= */}
+        <div className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0 pl-2">
+          {/* Phone Link */}
+          <a
+            href={BRAND.phonePrimaryHref}
+            className="whitespace-nowrap shrink-0 flex items-center gap-1.5 text-[11px] xl:text-xs font-medium text-white/90 hover:text-[#D4AF37] transition-colors group"
+            title="Call Acharya Dental Front Desk"
+          >
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-[#0B162A] transition-all">
+              <Phone className="h-3 w-3" />
+            </span>
+            <span className="tracking-wide whitespace-nowrap">+91 44 4383 1000</span>
+          </a>
+
+          {/* Hairline Divider */}
+          <span className="h-3.5 w-px bg-white/20 shrink-0" aria-hidden="true" />
+
+          {/* WhatsApp Direct */}
+          <a
+            href={BRAND.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="whitespace-nowrap shrink-0 flex items-center gap-1.5 text-[11px] xl:text-xs font-medium text-white/90 hover:text-[#25D366] transition-colors group"
+            title="Chat with Acharya Dental on WhatsApp"
+          >
+            <WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366] group-hover:scale-110 transition-transform duration-200" />
+            <span className="whitespace-nowrap">WhatsApp Us</span>
+          </a>
+
+          {/* Hairline Divider */}
+          <span className="h-3.5 w-px bg-white/20 shrink-0" aria-hidden="true" />
+
+          {/* Primary Book Appointment Button */}
+          <a
+            href="#contact"
+            onClick={(e) => handleNavClick(e, "#contact")}
+            className="whitespace-nowrap shrink-0 inline-flex items-center justify-center px-4 py-2 rounded-md bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#0B162A] text-[11px] xl:text-xs font-bold tracking-[0.1em] uppercase transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0"
+          >
+            Book Appointment
+          </a>
         </div>
-        <DesktopNav activeId={activeId} />
-        <div className="flex shrink-0 items-center gap-3">
-          <MobileMenu activeId={activeId} />
+
+        {/* =========================================================
+            4. Mobile Viewport Actions & Drawer Menu
+            ========================================================= */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <a
+            href="#contact"
+            onClick={(e) => handleNavClick(e, "#contact")}
+            className="whitespace-nowrap px-3 py-1.5 rounded-md bg-[#D4AF37] text-[#0B162A] text-[0.7rem] font-bold uppercase tracking-wider shadow-sm active:scale-95"
+          >
+            Book
+          </a>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <button
+                type="button"
+                aria-label="Open mobile navigation menu"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+              >
+                <Menu className="h-4.5 w-4.5" />
+              </button>
+            </SheetTrigger>
+
+            <SheetContent
+              side="right"
+              className="w-[85vw] max-w-sm bg-[#081225] border-l border-white/10 text-white p-6"
+            >
+              <SheetHeader className="sr-only">
+                <SheetTitle>Acharya Dental Menu</SheetTitle>
+              </SheetHeader>
+
+              <div className="flex h-full flex-col justify-between pt-2 pb-6">
+                <div>
+                  {/* Drawer Brand Header */}
+                  <div className="pb-4 border-b border-white/10">
+                    <img
+                      src={assetPath("/images/acharyadental/officail-logo-light.png")}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = assetPath(
+                          "/images/acharyadental/officail-logo.png"
+                        );
+                      }}
+                      alt="Acharya Dental"
+                      className="h-8 w-auto object-contain"
+                    />
+                  </div>
+
+                  {/* Drawer Navigation Links */}
+                  <nav className="mt-5 flex flex-col gap-1">
+                    {NAV_LINKS.map((link) => (
+                      <SheetClose asChild key={link.href}>
+                        <a
+                          href={link.href}
+                          onClick={(e) => handleNavClick(e, link.href)}
+                          className="flex items-center justify-between py-2.5 px-2 rounded-lg text-xs font-semibold tracking-wider uppercase text-white/85 hover:text-[#D4AF37] hover:bg-white/5 transition-colors whitespace-nowrap"
+                        >
+                          <span>{link.label}</span>
+                          <ArrowRight className="h-3.5 w-3.5 text-white/30" />
+                        </a>
+                      </SheetClose>
+                    ))}
+                  </nav>
+                </div>
+
+                {/* Drawer Footer Actions */}
+                <div className="flex flex-col gap-2.5 pt-5 border-t border-white/10">
+                  <a
+                    href={BRAND.phonePrimaryHref}
+                    className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-white/15 bg-white/5 text-xs font-semibold text-white hover:border-[#D4AF37] whitespace-nowrap"
+                  >
+                    <Phone className="h-3.5 w-3.5 text-[#D4AF37]" />
+                    Call +91 44 4383 1000
+                  </a>
+                  <a
+                    href={BRAND.whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#25D366]/15 border border-[#25D366]/40 text-xs font-semibold text-white whitespace-nowrap"
+                  >
+                    <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
+                    WhatsApp Us
+                  </a>
+                  <SheetClose asChild>
+                    <a
+                      href="#contact"
+                      onClick={(e) => handleNavClick(e, "#contact")}
+                      className="flex items-center justify-center gap-2 py-3 rounded-lg bg-[#D4AF37] text-xs font-bold uppercase tracking-wider text-[#0B162A] shadow-md whitespace-nowrap"
+                    >
+                      <Calendar className="h-4 w-4" />
+                      Book Consultation
+                    </a>
+                  </SheetClose>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 }
 

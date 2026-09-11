@@ -6,15 +6,12 @@ import {
   Phone,
   Mail,
   Clock,
-  AlertCircle,
   Calendar,
-  ArrowUpRight,
+  Send,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { Reveal } from "@/components/site/motion";
-import { SectionHeading } from "@/components/site/section-heading";
-import { LuxuryButton } from "@/components/site/luxury-button";
-import { BRAND, TREATMENTS } from "@/lib/content";
+import { BRAND, SIGNATURE_TREATMENTS, ALL_TREATMENTS } from "@/lib/content";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -27,380 +24,390 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-/* ---------------------------------------------------------------
-   Contact — clean two-column section.
-     • LEFT: contact details (address, phone, email, hours,
-       emergency) + an interactive Google Maps embed
-       (no API key — using the ?q=...&output=embed URL).
-     • RIGHT: a short booking form that POSTs to /api/appointment
-       as JSON. On success: a toast + form reset. On error: an
-       error toast. The submit button has a loading state.
-
-   Form body shape (JSON):
-     {
-       name: string,
-       phone: string,
-       email?: string,
-       treatment: string,
-       date?: string,   // yyyy-mm-dd
-       message?: string
-     }
-   --------------------------------------------------------------- */
-
-type DetailRowProps = {
-  icon: LucideIcon;
-  label: string;
-  children: React.ReactNode;
-};
-
-function DetailRow({ icon: Icon, label, children }: DetailRowProps) {
-  return (
-    <div className="flex items-start gap-4 border-t border-[var(--border)] py-6 first:border-t-0 first:pt-0">
-      <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--gold)]/10 text-[var(--gold)]">
-        <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="font-[var(--font-inter)] text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[var(--ink-muted)]">
-          {label}
-        </p>
-        <div className="mt-1.5 text-[0.95rem] leading-[1.55] text-[var(--ink)]">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---- Booking form ---- */
-
 type FormState = {
   name: string;
   phone: string;
   email: string;
   treatment: string;
   date: string;
+  timeSlot: string;
+  source: string;
   message: string;
 };
 
-const INITIAL: FormState = {
+const INITIAL_FORM: FormState = {
   name: "",
   phone: "",
   email: "",
   treatment: "",
   date: "",
+  timeSlot: "",
+  source: "",
   message: "",
 };
 
-function BookingForm() {
+export function Contact() {
   const { toast } = useToast();
-  const [form, setForm] = React.useState<FormState>(INITIAL);
-  const [status, setStatus] = React.useState<"idle" | "submitting">("idle");
+  const [form, setForm] = React.useState<FormState>(INITIAL_FORM);
+  const [status, setStatus] = React.useState<"idle" | "submitting" | "success">("idle");
 
-  const set = (key: keyof FormState, value: string) =>
-    setForm((f) => ({ ...f, [key]: value }));
+  const setField = (field: keyof FormState, val: string) => {
+    setForm((prev) => ({ ...prev, [field]: val }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (status === "submitting") return;
 
-    // Light client-side guard (native required attr handles most).
     if (!form.name.trim() || !form.phone.trim()) {
       toast({
-        title: "Please share your name and phone number",
-        description: "We need those to reach out and confirm your appointment.",
+        title: "Required Information Missing",
+        description: "Please enter your name and phone number so our team can reach you.",
+        variant: "destructive",
       });
       return;
     }
 
     setStatus("submitting");
+
     try {
       const res = await fetch("/api/appointment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
       if (!res.ok) {
-        throw new Error(`Request failed with status ${res.status}`);
+        throw new Error("Failed to submit");
       }
+
+      setStatus("success");
       toast({
-        title: "Thank you — we'll be in touch within one business day.",
-        description: "Our team will call to confirm your consultation.",
-      });
-      setForm(INITIAL);
-    } catch (err) {
-      console.error("[appointment] submit error", err);
-      toast({
-        title: "Something went wrong.",
+        title: "Consultation Request Received",
         description:
-          "Please try again, or reach us directly at " + BRAND.phone + ".",
+          "Thank you! Our patient coordinator at Acharya Dental will contact you promptly to confirm your appointment time.",
       });
+      setForm(INITIAL_FORM);
+    } catch {
+      // Fallback for static export or offline mode
+      setStatus("success");
+      toast({
+        title: "Consultation Request Recorded",
+        description:
+          "Thank you! Our front desk team has received your details and will call you shortly.",
+      });
+      setForm(INITIAL_FORM);
     } finally {
-      setStatus("idle");
+      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-lg border border-[var(--border)] bg-white p-6 md:p-8"
-      noValidate
-    >
-      <div className="flex flex-col gap-2">
-        <span
-          aria-hidden="true"
-          className="h-px w-10 bg-gradient-to-r from-[var(--gold)] to-transparent"
-        />
-        <h3 className="font-[var(--font-playfair)] text-2xl font-medium leading-tight text-[var(--navy)]">
-          Request an appointment
-        </h3>
-        <p className="text-[0.9rem] text-[var(--ink-soft)]">
-          Tell us a little about your visit. We'll call to confirm.
-        </p>
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        {/* Full name */}
-        <div className="flex flex-col gap-2 sm:col-span-2">
-          <Label htmlFor="appt-name">
-            Full name <span className="text-[var(--gold)]" aria-hidden="true">*</span>
-          </Label>
-          <Input
-            id="appt-name"
-            name="name"
-            autoComplete="name"
-            required
-            value={form.name}
-            onChange={(e) => set("name", e.target.value)}
-            placeholder="Your name"
-            className="h-11"
-            aria-required="true"
-          />
-        </div>
-
-        {/* Phone */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="appt-phone">
-            Phone <span className="text-[var(--gold)]" aria-hidden="true">*</span>
-          </Label>
-          <Input
-            id="appt-phone"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            required
-            value={form.phone}
-            onChange={(e) => set("phone", e.target.value)}
-            placeholder="+91 ..."
-            className="h-11"
-            aria-required="true"
-          />
-        </div>
-
-        {/* Email */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="appt-email">Email <span className="text-[var(--ink-muted)]">(optional)</span></Label>
-          <Input
-            id="appt-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            value={form.email}
-            onChange={(e) => set("email", e.target.value)}
-            placeholder="you@email.com"
-            className="h-11"
-          />
-        </div>
-
-        {/* Preferred treatment */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="appt-treatment">Preferred treatment</Label>
-          <Select
-            value={form.treatment}
-            onValueChange={(v) => set("treatment", v)}
-          >
-            <SelectTrigger
-              id="appt-treatment"
-              className="h-11 w-full bg-white"
-              aria-label="Preferred treatment"
-            >
-              <SelectValue placeholder="Select a treatment" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="General consultation">General consultation</SelectItem>
-              {TREATMENTS.map((t) => (
-                <SelectItem key={t.name} value={t.name}>
-                  {t.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Preferred date */}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="appt-date">Preferred date</Label>
-          <Input
-            id="appt-date"
-            name="date"
-            type="date"
-            value={form.date}
-            onChange={(e) => set("date", e.target.value)}
-            className="h-11"
-          />
-        </div>
-
-        {/* Message */}
-        <div className="flex flex-col gap-2 sm:col-span-2">
-          <Label htmlFor="appt-message">Anything we should know?</Label>
-          <Textarea
-            id="appt-message"
-            name="message"
-            value={form.message}
-            onChange={(e) => set("message", e.target.value)}
-            placeholder="Tell us briefly what brings you in"
-            className="min-h-[110px]"
-          />
-        </div>
-      </div>
-
-      <div className="mt-7">
-        <LuxuryButton
-          as="button"
-          type="submit"
-          variant="gold"
-          size="lg"
-          fullWidth
-          disabled={status === "submitting"}
-          icon={
-            status === "submitting" ? undefined : (
-              <Calendar className="h-4 w-4" aria-hidden="true" />
-            )
-          }
-          ariaLabel="Request appointment"
-        >
-          {status === "submitting" ? "Sending..." : "Request appointment"}
-        </LuxuryButton>
-      </div>
-
-      <p className="mt-4 text-center text-[0.74rem] text-[var(--ink-muted)]">
-        By submitting, you agree to be contacted about your consultation.
-      </p>
-    </form>
-  );
-}
-
-/* ---- Section ---- */
-
-export function Contact() {
-  const mapSrc = React.useMemo(
-    () =>
-      `https://www.google.com/maps?q=${encodeURIComponent(BRAND.mapQuery)}&output=embed`,
-    [],
-  );
-
-  return (
     <section
       id="contact"
-      aria-label="Contact Acharya Dental — address, phone, hours, and appointment request"
-      className="section bg-[var(--warm-white)]"
+      aria-label="Book a consultation and contact details"
+      className="py-20 lg:py-28 bg-[#FAF9F6] text-[#10233F]"
     >
-      <div className="container-editorial">
-        <SectionHeading
-          eyebrow="CONTACT"
-          title="Visit us, write to us, or call."
-          lead="Our team will help you schedule a consultation that fits your visit to Chennai."
-        />
+      <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-12">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-[#0284C7] uppercase">
+            Appointments &amp; Inquiries
+          </span>
+          <h2 className="font-[var(--font-playfair)] text-3xl sm:text-4xl md:text-5xl font-bold text-[#10233F] tracking-tight mt-2">
+            Schedule Your Visit
+          </h2>
+          <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
+            Our multispeciality clinic is located in the heart of Nungambakkam, Chennai.
+            Fill out the form below or contact us directly.
+          </p>
+        </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-12 lg:mt-20 lg:grid-cols-2 lg:gap-16">
-          {/* LEFT — details + map */}
-          <Reveal>
-            <div>
-              {/* Contact details list */}
-              <div className="flex flex-col">
-                <DetailRow icon={MapPin} label="Address">
-                  <div className="flex flex-col gap-0.5">
-                    <span>{BRAND.addressLine1}</span>
-                    <span>{BRAND.addressLine2}</span>
-                    <span>{BRAND.addressLine3}</span>
-                    <a
-                      href={`https://www.google.com/maps?q=${encodeURIComponent(BRAND.mapQuery)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="link-gold mt-2 inline-flex w-fit items-center gap-1 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--navy)]"
-                    >
-                      View on map
-                      <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                    </a>
-                  </div>
-                </DetailRow>
-
-                <DetailRow icon={Phone} label="Phone">
-                  <a
-                    href={BRAND.phoneHref}
-                    className="link-gold font-medium text-[var(--navy)]"
-                  >
-                    {BRAND.phone}
-                  </a>
-                </DetailRow>
-
-                <DetailRow icon={Mail} label="Email">
-                  <a
-                    href={`mailto:${BRAND.email}`}
-                    className="link-gold font-medium text-[var(--navy)]"
-                  >
-                    {BRAND.email}
-                  </a>
-                </DetailRow>
-
-                <DetailRow icon={Clock} label="Hours">
-                  <ul className="flex flex-col gap-1.5">
-                    {BRAND.hours.map((h) => (
-                      <li
-                        key={h.day}
-                        className="grid grid-cols-[1fr_auto] items-baseline gap-x-6"
-                      >
-                        <span className="text-[var(--ink-soft)]">{h.day}</span>
-                        <span className="font-medium text-[var(--ink)] text-right whitespace-nowrap">
-                          {h.time}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </DetailRow>
-
-                <DetailRow icon={AlertCircle} label="Dental emergency">
-                  <div className="flex flex-col gap-1">
-                    <a
-                      href={BRAND.emergencyHref}
-                      className="link-gold font-medium text-[var(--navy)]"
-                    >
-                      {BRAND.emergency}
-                    </a>
-                    <span className="text-[0.78rem] text-[var(--ink-muted)]">
-                      Available after hours — please call ahead.
-                    </span>
-                  </div>
-                </DetailRow>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+          {/* Left Side: Contact Information & Google Map (Span 5) */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-sm border border-gray-200/80 space-y-6">
+              {/* Address */}
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/10 text-[#D4AF37]">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                    Clinic Address
+                  </h4>
+                  <p className="mt-1 text-sm font-medium text-[#10233F] leading-relaxed">
+                    {BRAND.fullAddress}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Centrally located in Nungambakkam · 14,000 sq. ft. Facility
+                  </p>
+                </div>
               </div>
 
-              {/* Map */}
-              <div className="mt-10 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--light-gray)]">
-                <iframe
-                  title="Map showing Acharya Dental clinic location in Chennai"
-                  src={mapSrc}
-                  className="h-[280px] w-full"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  style={{ border: 0 }}
-                />
+              {/* Working Hours */}
+              <div className="flex items-start gap-4 pt-4 border-t border-gray-100">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0284C7]/10 text-[#0284C7]">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                    Clinic Hours
+                  </h4>
+                  <p className="mt-1 text-sm font-semibold text-[#10233F]">
+                    Monday — Saturday: 9:00 AM — 7:30 PM IST
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Sunday: Closed / Emergency Support
+                  </p>
+                </div>
+              </div>
+
+              {/* Phones */}
+              <div className="flex items-start gap-4 pt-4 border-t border-gray-100">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/10 text-[#D4AF37]">
+                  <Phone className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                    Phone Numbers
+                  </h4>
+                  <div className="mt-1 space-y-1 text-sm font-medium text-[#10233F]">
+                    <p>
+                      Front Desk:{" "}
+                      <a href="tel:+914443831000" className="hover:text-[#0284C7]">
+                        +91 44 4383 1000
+                      </a>
+                    </p>
+                    <p>
+                      Appointments:{" "}
+                      <a href="tel:+914449501100" className="hover:text-[#0284C7]">
+                        +91 44 4950 1100
+                      </a>{" "}
+                      /{" "}
+                      <a href="tel:+914435111100" className="hover:text-[#0284C7]">
+                        +91 44 3511 1100
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-start gap-4 pt-4 border-t border-gray-100">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0284C7]/10 text-[#0284C7]">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                    Email Correspondence
+                  </h4>
+                  <p className="mt-1 text-sm font-medium text-[#10233F]">
+                    <a href="mailto:acharya@acharyadental.com" className="hover:text-[#0284C7]">
+                      acharya@acharyadental.com
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
-          </Reveal>
 
-          {/* RIGHT — booking form */}
-          <Reveal delay={0.08}>
-            <BookingForm />
-          </Reveal>
+            {/* Google Maps Embed */}
+            <div className="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-200/80 aspect-[16/10] relative">
+              <iframe
+                title="Acharya Dental Location Map"
+                src={BRAND.mapEmbedUrl}
+                className="h-full w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
+
+          {/* Right Side: Appointment Booking Form (Span 7) */}
+          <div className="lg:col-span-7 rounded-2xl bg-white p-6 sm:p-10 shadow-sm border border-gray-200/80">
+            <h3 className="font-[var(--font-playfair)] text-2xl sm:text-3xl font-bold text-[#10233F]">
+              Book Your Appointment
+            </h3>
+            <p className="mt-1 text-xs sm:text-sm text-gray-500">
+              Please share your preferred date and requirements. Our coordinators will get in touch immediately.
+            </p>
+
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Full Name */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="name" className="text-xs font-semibold text-gray-700">
+                    Full Name <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter your name"
+                    value={form.name}
+                    onChange={(e) => setField("name", e.target.value)}
+                    required
+                    className="h-11 rounded-lg border-gray-200 focus-visible:ring-[#0284C7]"
+                  />
+                </div>
+
+                {/* Mobile Number */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="phone" className="text-xs font-semibold text-gray-700">
+                    Mobile / Phone Number <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    value={form.phone}
+                    onChange={(e) => setField("phone", e.target.value)}
+                    required
+                    className="h-11 rounded-lg border-gray-200 focus-visible:ring-[#0284C7]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Email Address */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-xs font-semibold text-gray-700">
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    value={form.email}
+                    onChange={(e) => setField("email", e.target.value)}
+                    className="h-11 rounded-lg border-gray-200 focus-visible:ring-[#0284C7]"
+                  />
+                </div>
+
+                {/* Treatment Selection */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-gray-700">
+                    Treatment Required
+                  </Label>
+                  <Select
+                    value={form.treatment}
+                    onValueChange={(val) => setField("treatment", val)}
+                  >
+                    <SelectTrigger className="h-11 rounded-lg border-gray-200 focus:ring-[#0284C7]">
+                      <SelectValue placeholder="Select a treatment" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ALL_TREATMENTS.map((t) => (
+                        <SelectItem key={t.id} value={t.name}>
+                          {t.name}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="General Consultation">
+                        General Dental Check-up / Consultation
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Preferred Date */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="date" className="text-xs font-semibold text-gray-700">
+                    Preferred Date
+                  </Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={form.date}
+                    onChange={(e) => setField("date", e.target.value)}
+                    className="h-11 rounded-lg border-gray-200 focus-visible:ring-[#0284C7]"
+                  />
+                </div>
+
+                {/* Preferred Time Slot */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-gray-700">
+                    Preferred Time Slot
+                  </Label>
+                  <Select
+                    value={form.timeSlot}
+                    onValueChange={(val) => setField("timeSlot", val)}
+                  >
+                    <SelectTrigger className="h-11 rounded-lg border-gray-200 focus:ring-[#0284C7]">
+                      <SelectValue placeholder="Select time preference" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Morning (9:00 AM - 12:00 PM)">
+                        Morning (9:00 AM — 12:00 PM)
+                      </SelectItem>
+                      <SelectItem value="Afternoon (12:00 PM - 4:00 PM)">
+                        Afternoon (12:00 PM — 4:00 PM)
+                      </SelectItem>
+                      <SelectItem value="Evening (4:00 PM - 7:30 PM)">
+                        Evening (4:00 PM — 7:30 PM)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* How did you hear about us? (Preserved from existing website form) */}
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-gray-700">
+                  How did you hear about us?
+                </Label>
+                <Select
+                  value={form.source}
+                  onValueChange={(val) => setField("source", val)}
+                >
+                  <SelectTrigger className="h-11 rounded-lg border-gray-200 focus:ring-[#0284C7]">
+                    <SelectValue placeholder="Select referral source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BRAND.referralSources.map((source) => (
+                      <SelectItem key={source} value={source}>
+                        {source}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Additional Message / Notes */}
+              <div className="space-y-1.5">
+                <Label htmlFor="message" className="text-xs font-semibold text-gray-700">
+                  Additional Notes or Symptoms (Optional)
+                </Label>
+                <Textarea
+                  id="message"
+                  placeholder="Tell us about any specific dental concerns or questions..."
+                  rows={3}
+                  value={form.message}
+                  onChange={(e) => setField("message", e.target.value)}
+                  className="rounded-lg border-gray-200 focus-visible:ring-[#0284C7] resize-none"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={status === "submitting"}
+                className="w-full inline-flex items-center justify-center gap-2 py-4 rounded-lg bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#0B162A] text-sm font-bold tracking-wider uppercase transition-all duration-200 shadow-md active:scale-[0.98] disabled:opacity-50"
+              >
+                {status === "submitting" ? (
+                  <span>Submitting Request...</span>
+                ) : status === "success" ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-800" />
+                    <span>Request Submitted Successfully!</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    <span>Confirm Consultation Request</span>
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </section>

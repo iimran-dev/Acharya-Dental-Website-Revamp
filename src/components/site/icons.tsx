@@ -2,9 +2,167 @@
 
 import * as React from "react";
 
+import { assetPath } from "@/lib/utils";
+
 /* ---------------------------------------------------------------
-   WhatsAppIcon — refined inline WhatsApp glyph
+   Acharya Dental Brand Monogram & Icons
    --------------------------------------------------------------- */
+
+export function AcharyaLogo({
+  className = "h-11",
+  light = true,
+}: {
+  className?: string;
+  light?: boolean;
+}) {
+  return (
+    <img
+      src={assetPath(light ? "/images/acharyadental/officail-logo-light.png" : "/images/acharyadental/officail-logo.png")}
+      onError={(e) => {
+        (e.currentTarget as HTMLImageElement).src = assetPath("/images/acharyadental/officail-logo.png");
+      }}
+      alt="Acharya Dental - Advanced Dentistry. Simplified."
+      className={`w-auto object-contain ${className}`}
+      loading="eager"
+    />
+  );
+}
+
+export function GoogleGIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <path
+        fill="#EA4335"
+        d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"
+      />
+      <path
+        fill="#4285F4"
+        d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12 0 14.5s.7 4.8 1.9 7.2l3.7-2.9z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.4 7.5 23 12 23z"
+      />
+    </svg>
+  );
+}
+
+export function OperatoryChairIcon({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 4h3a2 2 0 0 1 2 2v3H4V6a2 2 0 0 1 1-2Z" />
+      <path d="M4 9h16l-1 5H5L4 9Z" />
+      <path d="M12 14v4" />
+      <path d="M8 20h8" />
+      <path d="M15 4h4a1 1 0 0 1 1 1v4" />
+    </svg>
+  );
+}
+
+export function SpecialistDoctorIcon({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="7" r="4" />
+      <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+export function ToothImplantIcon({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M7 3c-1.5 0-3 1.5-3 3.5 0 2.5 1.5 5 3 6.5l1 1v6c0 .6.4 1 1 1h4c.6 0 1-.4 1-1v-6l1-1c1.5-1.5 3-4 3-6.5 0-2-1.5-3.5-3-3.5-1.5 0-2.5.8-3 1.8-.5-1-1.5-1.8-3-1.8Z" />
+      <line x1="9" y1="14" x2="15" y2="14" />
+      <line x1="9" y1="17" x2="15" y2="17" />
+    </svg>
+  );
+}
+
+export function ToothSparkleIcon({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2Z" />
+      <path d="M19 13l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z" />
+      <path d="M5 15l.8 1.7 1.7.8-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8.8-1.7Z" />
+    </svg>
+  );
+}
+
+export function FullMouthRehabIcon({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 21a9 9 0 0 0 9-9c0-4-3-8-9-8s-9 4-9 8a9 9 0 0 0 9 9Z" />
+      <path d="M8 12h8" />
+      <path d="M9 9c0 1.5 1 3 3 3s3-1.5 3-3" />
+      <path d="M9 15c0-1.5 1-3 3-3s3 1.5 3 3" />
+    </svg>
+  );
+}
+
+export function AlignerOrthodonticIcon({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="6" width="18" height="12" rx="6" />
+      <circle cx="8" cy="12" r="2" />
+      <circle cx="16" cy="12" r="2" />
+      <line x1="10" y1="12" x2="14" y2="12" />
+    </svg>
+  );
+}
+
 export function WhatsAppIcon({
   className = "h-4 w-4",
   ariaHidden = true,
@@ -24,7 +182,6 @@ export function WhatsAppIcon({
   );
 }
 
-/* Star rating — refined filled stars */
 export function StarRow({
   count = 5,
   className = "h-4 w-4",
@@ -33,17 +190,12 @@ export function StarRow({
   className?: string;
 }) {
   return (
-    <div className="flex items-center gap-1" aria-label={`${count} out of 5 stars`}>
+    <div className="flex items-center gap-0.5" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
-          className={
-            i < count
-              ? `${className} text-[var(--gold)]`
-              : `${className} text-[var(--ink-muted)]/30`
-          }
+          className={`${className} text-[#F59E0B] fill-[#F59E0B]`}
           viewBox="0 0 24 24"
-          fill="currentColor"
           aria-hidden="true"
         >
           <path d="M12 2l2.95 5.99 6.61.96-4.78 4.66 1.13 6.58L12 17.77l-5.91 3.11 1.13-6.58L2.44 9.95l6.61-.96L12 2z" />

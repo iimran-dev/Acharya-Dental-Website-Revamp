@@ -1,133 +1,74 @@
 "use client";
 
-import { Award, Globe2, ScanLine, ShieldCheck } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { RevealGroup, RevealItem } from "@/components/site/motion";
-import { SectionHeading } from "@/components/site/section-heading";
-import { WHY_ACHARYA } from "@/lib/content";
+import * as React from "react";
+import { Award, Globe, Monitor, ShieldCheck } from "lucide-react";
 
-/* ---------------------------------------------------------------
-   WhyAcharya — full-width dark navy luxury band.
-   Four simple feature blocks with elegant gold OUTLINE icons and
-   large "01–04" Playfair numerals (white/15, decorative).
-   Vertical gold/white-10 dividers between columns on lg+,
-   horizontal rules on mobile. Subtle fade-up reveal on scroll.
-   NO excessive motion.
-   --------------------------------------------------------------- */
-
-/* Map content icon names → lucide-react components */
-const ICONS: Record<string, LucideIcon> = {
-  Award,
-  Globe2,
-  ScanLine,
-  ShieldCheck,
-};
-
-type Feature = (typeof WHY_ACHARYA)[number];
-
-function FeatureBlock({ feature }: { feature: Feature }) {
-  const Icon = ICONS[feature.icon] ?? Award;
-
-  return (
-    <>
-      {/* Decorative large ordinal — sits beside the icon, very subtle */}
-      <div className="flex items-start justify-between gap-4">
-        <span
-          aria-hidden="true"
-          className="font-[var(--font-playfair)] text-5xl font-medium leading-none text-white/25 md:text-6xl"
-        >
-          {feature.number}
-        </span>
-
-        {/* Gold outline icon — elegant, thin stroke, no badge */}
-        <Icon
-          className="h-11 w-11 text-[var(--gold)]"
-          strokeWidth={1.5}
-          aria-hidden="true"
-        />
-      </div>
-
-      {/* Title */}
-      <h3 className="mt-7 font-[var(--font-inter)] text-lg font-medium tracking-[-0.005em] text-white md:text-xl">
-        {feature.title}
-      </h3>
-
-      {/* Description */}
-      <p className="mt-3 text-[0.92rem] leading-[1.65] text-pretty text-white/75">
-        {feature.description}
-      </p>
-    </>
-  );
-}
+const WHY_FEATURES = [
+  {
+    title: "50+ Years Legacy",
+    description: "Half a century of trust, care and clinical excellence.",
+    icon: Award,
+  },
+  {
+    title: "1000+ International Patients",
+    description: "Patients from 25+ countries trust us for their smiles.",
+    icon: Globe,
+  },
+  {
+    title: "Digital Treatment Planning",
+    description: "Advanced technology for precise diagnosis and predictable results.",
+    icon: Monitor,
+  },
+  {
+    title: "World-Class Sterilization",
+    description: "International standards of hygiene and sterilization protocols.",
+    icon: ShieldCheck,
+  },
+];
 
 export function WhyAcharya() {
   return (
     <section
-      id="why-acharya"
-      aria-label="Why Acharya Dental — institutional experience and modern clinical precision"
-      className="section relative overflow-hidden bg-navy-gradient grain"
+      id="why-choose-us"
+      aria-label="Why Patients Choose Acharya Dental"
+      className="py-16 lg:py-20 bg-[#071120] border-y border-white/10 text-white"
     >
-      <div className="container-editorial relative z-10">
-        {/* Heading — light tone for dark bg */}
-        <SectionHeading
-          eyebrow="WHY ACHARYA DENTAL"
-          title="Where institutional experience meets modern clinical precision."
-          lead="Four reasons patients trust us with their care — and with the care of their families."
-          tone="light"
-        />
+      <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-12">
+        {/* Centered / clean uppercase title matching reference mockup */}
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-xs sm:text-sm md:text-base font-bold tracking-[0.25em] text-white uppercase">
+            Why Patients Choose Acharya Dental
+          </h2>
+          <div className="mx-auto mt-3 h-0.5 w-12 bg-[#D4AF37]" />
+        </div>
 
-        {/* Bento Grid — 1 dominant span-2 hero feature + 3 single-span features */}
-        <RevealGroup className="mt-14 grid grid-cols-1 gap-6 lg:mt-18 lg:grid-cols-3">
-          {WHY_ACHARYA.map((f, i) => {
-            const isHero = i === 0;
-            const Icon = ICONS[f.icon] ?? Award;
-
+        {/* 4 Feature Columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+          {WHY_FEATURES.map((feature, idx) => {
+            const Icon = feature.icon;
             return (
-              <RevealItem
-                key={f.number}
-                className={isHero ? "lg:col-span-2" : "lg:col-span-1"}
+              <div
+                key={idx}
+                className="flex flex-col items-center text-center sm:items-start sm:text-left group"
               >
-                <div
-                  className={`card-bento-dark group relative flex h-full flex-col justify-between overflow-hidden p-8 md:p-10 ${
-                    isHero ? "border-[var(--gold)]/30 bg-navy-700/60" : ""
-                  }`}
-                >
-                  {/* Background glow accent for hero card */}
-                  {isHero && (
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[var(--gold)]/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
-                    />
-                  )}
-
-                  {/* Card Header: Ordinal + Icon */}
-                  <div className="flex items-center justify-between gap-4">
-                    <span
-                      aria-hidden="true"
-                      className="font-[var(--font-playfair)] text-5xl font-semibold leading-none text-white/30 transition-colors duration-300 group-hover:text-[var(--gold-soft)] md:text-6xl"
-                    >
-                      {f.number}
-                    </span>
-
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-[var(--gold)]/30 bg-[var(--navy)]/60 text-[var(--gold)] shadow-inner transition-transform duration-300 group-hover:scale-110 group-hover:border-[var(--gold)]">
-                      <Icon className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
-                    </div>
-                  </div>
-
-                  {/* Card Content */}
-                  <div className="relative z-10 mt-8">
-                    <h3 className="font-[var(--font-playfair)] text-xl font-medium tracking-tight text-white md:text-2xl">
-                      {f.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-pretty text-white/80 md:text-base">
-                      {f.description}
-                    </p>
-                  </div>
+                {/* Circular Gold Outline Icon */}
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37] mb-5 shadow-[0_0_20px_rgba(212,175,55,0.15)] group-hover:scale-105 group-hover:border-[#D4AF37] transition-all duration-300">
+                  <Icon className="h-7 w-7" strokeWidth={1.5} />
                 </div>
-              </RevealItem>
+
+                {/* Title */}
+                <h3 className="font-[var(--font-playfair)] text-lg sm:text-xl font-bold text-white tracking-tight">
+                  {feature.title}
+                </h3>
+
+                {/* Description */}
+                <p className="mt-2.5 text-xs sm:text-sm text-white/70 leading-relaxed max-w-xs">
+                  {feature.description}
+                </p>
+              </div>
             );
           })}
-        </RevealGroup>
+        </div>
       </div>
     </section>
   );

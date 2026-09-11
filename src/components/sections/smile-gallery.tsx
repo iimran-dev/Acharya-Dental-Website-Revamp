@@ -1,179 +1,150 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-import { RevealGroup, RevealItem } from "@/components/site/motion";
-import { SectionHeading } from "@/components/site/section-heading";
+import * as React from "react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { BeforeAfterSlider } from "@/components/site/before-after-slider";
 import { SMILE_CASES } from "@/lib/content";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-/* ---------------------------------------------------------------
-   SmileGallery — premium clinical before/after experience.
-   Two cases in a 2-col grid on lg+, each with a draggable
-   BeforeAfterSlider and a "Read patient story" trigger that opens
-   an accessible shadcn Dialog showing the patient story, the
-   treatment performed, and the outcome.
-
-   Visual language inherited from Tasks 4-a / 4-b:
-     • warm-white section background
-     • gold-rule eyebrow pattern (handled by SectionHeading)
-     • .display-2 navy heading
-     • .link-gold "Read patient story →" affordance (matches the
-       "Explore treatment →" pattern used in treatments.tsx)
-     • modal: gold accent strip at the top, Playfair DialogTitle,
-       14px gold rule, sr-only DialogDescription, gold eyebrow
-       labels above each section — same register as the
-       treatment modal.
-   --------------------------------------------------------------- */
-
-/* Short editorial teaser line under each case title. Distinct
-   from the modal's full story, so the modal reveals something new. */
-const CASE_TEASERS: Record<string, string> = {
-  "case-1":
-    "Worn and uneven enamel, restored conservatively with porcelain veneers.",
-  "case-2":
-    "Facial tone and aesthetic symmetry, refreshed with custom clinical protocols.",
-};
-
-type SmileCase = (typeof SMILE_CASES)[number];
-
-function SmileCaseCard({ caseItem }: { caseItem: SmileCase }) {
-  const teaser = CASE_TEASERS[caseItem.id] ?? caseItem.treatment;
-
-  return (
-    <Dialog>
-      <RevealItem>
-        <article className="group">
-          {/* Before / after comparison slider (keyboard accessible) */}
-          <div className="relative overflow-hidden rounded-lg shadow-[0_18px_48px_-30px_rgba(16,35,63,0.35)]">
-            <BeforeAfterSlider
-              beforeSrc={caseItem.before}
-              afterSrc={caseItem.after}
-              beforeAlt={`${caseItem.title} — before treatment, clinical close-up`}
-              afterAlt={`${caseItem.title} — after treatment, clinical close-up`}
-              className="aspect-[4/3] w-full"
-            />
-          </div>
-
-          {/* Caption */}
-          <div className="mt-6">
-            <h3 className="font-[var(--font-playfair)] text-2xl font-medium leading-tight text-[var(--navy)]">
-              {caseItem.title}
-            </h3>
-
-            <span
-              aria-hidden="true"
-              className="mt-4 mb-3 block h-px w-10 bg-gradient-to-r from-[var(--gold)] to-transparent"
-            />
-
-            <p className="max-w-[42ch] text-pretty text-[0.95rem] leading-relaxed text-[var(--ink-soft)]">
-              {teaser}
-            </p>
-
-            {/* Trigger — opens the patient-story Dialog */}
-            <DialogTrigger asChild>
-              <button
-                type="button"
-                className="link-gold group/btn mt-5 inline-flex items-center gap-2 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-[var(--navy)]"
-              >
-                Read patient story
-                <ArrowRight
-                  className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/btn:translate-x-1"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
-              </button>
-            </DialogTrigger>
-          </div>
-        </article>
-      </RevealItem>
-
-      {/* Modal — accessible (Esc, focus trap handled by Radix) */}
-      <DialogContent className="overflow-hidden border-[var(--gold)]/25 bg-white p-0 sm:max-w-[560px]">
-        {/* Thin gold accent strip at the top of the modal */}
-        <div
-          aria-hidden="true"
-          className="h-px w-full bg-gradient-to-r from-[var(--gold)] via-[var(--gold)]/40 to-transparent"
-        />
-        <div className="px-7 pb-8 pt-7 md:px-9 md:pb-9 md:pt-9">
-          <DialogTitle asChild>
-            <h2 className="font-[var(--font-playfair)] text-3xl font-medium leading-tight text-[var(--navy)] md:text-[2.1rem]">
-              {caseItem.title}
-            </h2>
-          </DialogTitle>
-
-          <span
-            aria-hidden="true"
-            className="mt-5 mb-6 block h-px w-14 bg-gradient-to-r from-[var(--gold)] to-transparent"
-          />
-
-          {/* Visually-hidden description for screen readers (required by Radix aria-describedby) */}
-          <DialogDescription className="sr-only">
-            Patient story, treatment performed and outcome for{" "}
-            {caseItem.title}.
-          </DialogDescription>
-
-          {/* Three editorial blocks: The Patient · Treatment · Outcome */}
-          <div className="space-y-6">
-            <section>
-              <h3 className="font-[var(--font-inter)] text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[var(--gold)]">
-                The Patient
-              </h3>
-              <p className="mt-2 text-pretty text-[0.95rem] leading-[1.7] text-[var(--ink-soft)]">
-                {caseItem.story}
-              </p>
-            </section>
-
-            <section>
-              <h3 className="font-[var(--font-inter)] text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[var(--gold)]">
-                Treatment Performed
-              </h3>
-              <p className="mt-2 text-pretty text-[0.95rem] leading-[1.7] text-[var(--ink-soft)]">
-                {caseItem.treatment}
-              </p>
-            </section>
-
-            <section>
-              <h3 className="font-[var(--font-inter)] text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[var(--gold)]">
-                Outcome
-              </h3>
-              <p className="mt-2 text-pretty text-[0.95rem] leading-[1.7] text-[var(--ink-soft)]">
-                {caseItem.outcome}
-              </p>
-            </section>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
+import { cn, assetPath } from "@/lib/utils";
 
 export function SmileGallery() {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  const cases = [
+    {
+      id: "case-1",
+      title: "Full Arch Realignment & Whitening",
+      before: assetPath("/images/cases/case-1-before.jpg"),
+      after: assetPath("/images/cases/case-1-after.jpg"),
+    },
+    {
+      id: "case-2",
+      title: "Aesthetic Porcelain Veneer Transformation",
+      before: assetPath("/images/cases/case-2-before.jpg"),
+      after: assetPath("/images/cases/case-2-after.jpg"),
+    },
+    {
+      id: "case-3",
+      title: "Comprehensive Restorative Rehabilitation",
+      before: assetPath("/images/cases/case-1-before.jpg"),
+      after: assetPath("/images/cases/case-2-after.jpg"),
+    },
+  ];
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : cases.length - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev < cases.length - 1 ? prev + 1 : 0));
+  };
+
   return (
     <section
       id="gallery"
-      aria-label="Smile transformations — before and after clinical results"
-      className="section bg-[var(--warm-white)]"
+      aria-label="Smile Transformations"
+      className="py-20 lg:py-28 bg-[#FAF9F6] text-[#10233F]"
     >
-      <div className="container-editorial">
-        <SectionHeading
-          eyebrow="SMILE TRANSFORMATIONS"
-          title="Real results, considered and conservative."
-          lead="Drag the handle to compare before and after. Each case is planned digitally and executed conservatively."
-        />
+      <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-12">
+        {/* Header matching reference mockup */}
+        <div className="flex items-center justify-between pb-10 border-b border-gray-200/80">
+          <h2 className="text-sm sm:text-base md:text-lg font-bold tracking-[0.2em] text-[#10233F] uppercase">
+            Smile Transformations
+          </h2>
 
-        {/* Two-case grid — staggered entrance via RevealGroup */}
-        <RevealGroup className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
-          {SMILE_CASES.map((c) => (
-            <SmileCaseCard key={c.id} caseItem={c} />
-          ))}
-        </RevealGroup>
+          <a
+            href="#gallery"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold tracking-wider uppercase text-[#0284C7] hover:text-[#0369A1] transition-colors group"
+          >
+            <span>View All Cases</span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </a>
+        </div>
+
+        {/* Carousel Container with Left/Right Arrows */}
+        <div className="relative mt-12">
+          {/* Navigation Arrows */}
+          <button
+            type="button"
+            onClick={handlePrev}
+            aria-label="Previous case"
+            className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:text-[#0284C7] hover:border-[#0284C7] transition-colors focus:outline-none"
+          >
+            <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleNext}
+            aria-label="Next case"
+            className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:text-[#0284C7] hover:border-[#0284C7] transition-colors focus:outline-none"
+          >
+            <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+          </button>
+
+          {/* 3 Cases Grid / Row (matching the 3 cards shown in reference mockup) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 px-4 sm:px-6">
+            {cases.map((c, i) => (
+              <div
+                key={c.id}
+                className="group relative rounded-2xl overflow-hidden bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-gray-200/70"
+              >
+                {/* Side-by-side Before & After split presentation */}
+                <div className="relative aspect-[16/10] w-full grid grid-cols-2 overflow-hidden bg-black">
+                  {/* Before side */}
+                  <div className="relative h-full w-full border-r border-white/20 overflow-hidden">
+                    <img
+                      src={c.before}
+                      alt="Before procedure"
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/70 text-[0.62rem] font-bold uppercase tracking-wider text-white backdrop-blur-xs">
+                      Before
+                    </span>
+                  </div>
+
+                  {/* After side */}
+                  <div className="relative h-full w-full overflow-hidden">
+                    <img
+                      src={c.after}
+                      alt="After procedure"
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-[#D4AF37] text-[0.62rem] font-bold uppercase tracking-wider text-[#071120] shadow-sm">
+                      After
+                    </span>
+                  </div>
+                </div>
+
+                {/* Optional interactive slider toggle below */}
+                <div className="p-4 bg-white border-t border-gray-100 flex items-center justify-between">
+                  <span className="font-[var(--font-playfair)] text-sm sm:text-base font-bold text-[#10233F]">
+                    {c.title}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Carousel Pagination Dots */}
+          <div className="mt-8 flex items-center justify-center gap-2">
+            {[0, 1, 2, 3, 4].map((dot) => (
+              <button
+                key={dot}
+                type="button"
+                aria-label={`Go to slide ${dot + 1}`}
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300",
+                  dot === currentIndex
+                    ? "w-6 bg-[#0284C7]"
+                    : "w-2 bg-gray-300 hover:bg-gray-400"
+                )}
+                onClick={() => setCurrentIndex(dot % cases.length)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

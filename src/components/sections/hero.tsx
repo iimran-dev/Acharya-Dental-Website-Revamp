@@ -1,206 +1,221 @@
 "use client";
 
+import * as React from "react";
 import { motion, type Variants } from "framer-motion";
-import { Calendar, ChevronDown } from "lucide-react";
-import { LuxuryButton } from "@/components/site/luxury-button";
-import { WhatsAppIcon } from "@/components/site/icons";
+import { Calendar, Trophy, Smile, Globe, ChevronDown } from "lucide-react";
+import {
+  WhatsAppIcon,
+  GoogleGIcon,
+  OperatoryChairIcon,
+  SpecialistDoctorIcon,
+  StarRow,
+} from "@/components/site/icons";
 import { CountUp } from "@/components/site/count-up";
 import { EASE_EDITORIAL } from "@/components/site/motion";
-import { BRAND, HERO_METRICS } from "@/lib/content";
-import { cn, assetPath } from "@/lib/utils";
-
-/* ---------------------------------------------------------------
-   Hero — full-screen cinematic editorial hero.
-   Subtle slow zoom on bg image, staggered fade-up content,
-   CountUp trust metrics row, scroll indicator.
-   --------------------------------------------------------------- */
-
-type Metric = {
-  value: number;
-  suffix: string;
-  label: string;
-  decimals?: number;
-};
+import { BRAND, HERO_METRICS, HERO_BADGE } from "@/lib/content";
+import { assetPath } from "@/lib/utils";
 
 const heroStagger: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.14, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
   },
 };
 
 const heroItem: Variants = {
-  hidden: { opacity: 0, y: 22 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8, ease: EASE_EDITORIAL },
+    transition: { duration: 0.75, ease: EASE_EDITORIAL },
   },
 };
 
-function MetricNumber({ m }: { m: Metric }) {
-  return (
-    <span className="font-[var(--font-playfair)] text-4xl font-medium tracking-tight text-white md:text-5xl">
-      <CountUp
-        value={m.value}
-        decimals={m.decimals ?? 0}
-        suffix={m.suffix}
-        duration={1800}
-      />
-    </span>
-  );
-}
-
-function HeroMetric({ m }: { m: Metric }) {
-  return (
-    <div className="flex flex-col gap-2">
-      <MetricNumber m={m} />
-      <span className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-white/70">
-        {m.label}
-      </span>
-    </div>
-  );
-}
+const METRIC_ICONS = [Trophy, Smile, Globe];
 
 export function Hero() {
   return (
     <section
       id="top"
-      aria-label="Acharya Dental — 50 years of dental excellence"
-      className="relative isolate flex min-h-screen items-center overflow-hidden"
+      aria-label="Acharya Dental — 50 Years of Trusted Dental Excellence"
+      className="relative isolate flex min-h-[92vh] lg:min-h-screen items-center justify-center overflow-hidden pt-24 pb-16 lg:py-32"
     >
-      {/* Background image — slow zoom */}
+      {/* Background Operatory Photography with warm ambient clinical lighting */}
       <motion.img
-        src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2000&q=85"
-        alt="The Acharya Dental clinic interior — a calm, refined operatory setting"
+        src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=2200&q=88"
+        alt="Acharya Dental luxury operatory interior in Nungambakkam Chennai"
         aria-hidden="true"
-        className="absolute inset-0 -z-20 h-full w-full object-cover"
-        initial={{ scale: 1.1 }}
+        className="absolute inset-0 -z-30 h-full w-full object-cover object-center"
+        initial={{ scale: 1.08 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 18, ease: "easeOut" }}
+        transition={{ duration: 16, ease: "easeOut" }}
       />
 
-      {/* Navy overlay — top to bottom gradient for legibility.
-          Stronger at top (so the transparent navbar text reads cleanly
-          against bright hero photography) and a deeper bottom fade so
-          the trust metrics don't vibrate against complex imagery. */}
+      {/* Navy Gradient Scrim — deeper on left to highlight text, lighter on right to reveal the modern operatory */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(11,22,42,0.88)] via-[rgba(16,35,63,0.7)] to-[rgba(11,22,42,0.92)]"
+        className="absolute inset-0 -z-20 bg-gradient-to-r from-[#071120]/95 via-[#071120]/80 to-[#071120]/50"
       />
-      {/* Extra bottom floor so metrics sit on a clean dark base */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[40vh] bg-gradient-to-t from-[rgba(11,22,42,0.85)] to-transparent"
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-[#071120] via-transparent to-[#071120]/60"
       />
 
-      {/* Subtle grain texture */}
-      <div
-        aria-hidden="true"
-        className="grain absolute inset-0 -z-10 opacity-60"
-      />
-
-      {/* Content */}
-      <motion.div
-        className="mx-auto w-full max-w-[1180px] px-6"
-        variants={heroStagger}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* 1. Eyebrow with gold rule */}
+      {/* Content Container */}
+      <div className="mx-auto w-full max-w-[1536px] px-4 sm:px-6 lg:px-12 relative z-10">
         <motion.div
-          variants={heroItem}
-          className="mb-7 flex items-center gap-3"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center"
+          variants={heroStagger}
+          initial="hidden"
+          animate="visible"
         >
-
-        </motion.div>
-
-        {/* 2. Headline */}
-        <motion.h1
-          variants={heroItem}
-          className="display-1 max-w-[14ch] text-balance text-white sm:max-w-[16ch]"
-        >
-          50 Years of Trusted Dental Excellence
-        </motion.h1>
-
-        {/* 3. Supporting lead */}
-        <motion.p
-          variants={heroItem}
-          className="lead mt-7 max-w-[52ch] text-pretty text-white/90 font-normal"
-        >
-          Advanced Dentistry in Chennai for Families and International Patients.
-        </motion.p>
-
-        {/* 4. CTAs */}
-        <motion.div
-          variants={heroItem}
-          className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
-        >
-          <LuxuryButton
-            as="link"
-            href="#contact"
-            variant="light"
-            size="lg"
-            icon={<Calendar className="h-4 w-4" aria-hidden="true" />}
-          >
-            Book Consultation
-          </LuxuryButton>
-          <LuxuryButton
-            as="link"
-            href={BRAND.whatsappHref}
-            variant="light"
-            size="lg"
-            icon={<WhatsAppIcon className="h-4 w-4" aria-hidden="true" />}
-            ariaLabel="Chat with Acharya Dental on WhatsApp"
-          >
-            WhatsApp Now
-          </LuxuryButton>
-        </motion.div>
-
-        {/* Trust metrics row */}
-        <motion.div
-          variants={heroItem}
-          className="mt-14 grid max-w-3xl grid-cols-2 gap-x-6 gap-y-8 sm:gap-x-10 md:grid-cols-4 md:gap-x-0"
-        >
-          {HERO_METRICS.map((m, i) => (
-            <div
-              key={m.label}
-              className={cn(
-                "md:px-8 md:first:pl-0",
-                i > 0 && "md:border-l md:border-white/15",
-              )}
+          {/* Left Column: Headline, Subtitle, Metrics, CTAs (Span 7 or 8) */}
+          <div className="lg:col-span-8 flex flex-col justify-center">
+            {/* 1. Main Headline */}
+            <motion.h1
+              variants={heroItem}
+              className="font-[var(--font-playfair)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]"
             >
-              <HeroMetric m={m as Metric} />
-            </div>
-          ))}
-        </motion.div>
-      </motion.div>
+              50 Years of <br />
+              <span className="text-white">Trusted Dental</span> <br />
+              <span className="text-[#F1E5D1] italic font-normal">Excellence</span>
+            </motion.h1>
 
-      {/* Scroll-down indicator */}
-      <motion.a
-        href="#about"
-        aria-label="Scroll to content"
-        className="absolute inset-x-0 bottom-8 z-10 mx-auto flex w-fit flex-col items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.6, duration: 0.8 }}
+            {/* 2. Subtitle */}
+            <motion.p
+              variants={heroItem}
+              className="mt-6 sm:mt-7 text-base sm:text-lg md:text-xl text-white/85 font-normal max-w-2xl leading-relaxed"
+            >
+              Advanced Dentistry in Chennai for Families &amp; International Patients
+            </motion.p>
+
+            {/* 3. 3 Key Metrics Row with Gold Outline Icons */}
+            <motion.div
+              variants={heroItem}
+              className="mt-10 sm:mt-12 grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl"
+            >
+              {HERO_METRICS.map((metric, idx) => {
+                const IconComponent = METRIC_ICONS[idx] || Trophy;
+                return (
+                  <div key={metric.label} className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37]">
+                        <IconComponent className="h-4 w-4" strokeWidth={1.75} />
+                      </div>
+                      <span className="font-[var(--font-playfair)] text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
+                        <CountUp
+                          value={metric.value}
+                          suffix={metric.suffix}
+                          duration={1800}
+                        />
+                      </span>
+                    </div>
+                    <span className="text-[0.65rem] sm:text-[0.72rem] font-semibold tracking-[0.14em] text-white/70 uppercase">
+                      {metric.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </motion.div>
+
+            {/* 4. CTA Buttons Row */}
+            <motion.div
+              variants={heroItem}
+              className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
+            >
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-lg bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#0B162A] text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:shadow-[0_6px_25px_rgba(212,175,55,0.5)] active:scale-95"
+              >
+                <Calendar className="h-4 w-4" />
+                Book Consultation
+              </a>
+
+              <a
+                href={BRAND.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-lg bg-[#071120]/70 hover:bg-[#071120] border border-white/20 hover:border-[#25D366] text-white text-xs sm:text-sm font-semibold tracking-wider uppercase transition-all duration-300 backdrop-blur-md active:scale-95 group"
+              >
+                <WhatsAppIcon className="h-4 w-4 text-[#25D366] group-hover:scale-110 transition-transform" />
+                WhatsApp Now
+              </a>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Floating Google Review & Operatory Card (Span 4 or 5) */}
+          <div className="lg:col-span-4 flex justify-center lg:justify-end">
+            <motion.div
+              variants={heroItem}
+              className="w-full max-w-sm rounded-2xl bg-white/95 backdrop-blur-xl p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.35)] border border-white/40 flex flex-col gap-5 text-[#10233F]"
+            >
+              {/* Google Reviews Block */}
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm border border-gray-100">
+                  <GoogleGIcon className="h-6 w-6" />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-[var(--font-playfair)] text-2xl font-bold text-[#10233F]">
+                      {HERO_BADGE.rating}
+                    </span>
+                    <StarRow count={5} className="h-4 w-4" />
+                  </div>
+                  <span className="text-xs font-semibold text-gray-600 mt-0.5">
+                    {HERO_BADGE.reviewsText}
+                  </span>
+                </div>
+              </div>
+
+              {/* Horizontal Divider */}
+              <div className="h-px w-full bg-gray-200/80" />
+
+              {/* Operatories Block */}
+              <div className="flex items-center gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/10 text-[#C89B48]">
+                  <OperatoryChairIcon className="h-6 w-6 text-[#C89B48]" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-[var(--font-playfair)] text-xl font-bold text-[#10233F]">
+                    {HERO_BADGE.operatoriesText}
+                  </span>
+                  <span className="text-xs text-gray-600">
+                    Spacious 14,000 sq. ft. Facility
+                  </span>
+                </div>
+              </div>
+
+              {/* Horizontal Divider */}
+              <div className="h-px w-full bg-gray-200/80" />
+
+              {/* U.S. Trained Specialists Block */}
+              <div className="flex items-center gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/10 text-[#C89B48]">
+                  <SpecialistDoctorIcon className="h-6 w-6 text-[#C89B48]" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-[var(--font-playfair)] text-xl font-bold text-[#10233F]">
+                    {HERO_BADGE.specialistsText}
+                  </span>
+                  <span className="text-xs text-gray-600">
+                    NYU &amp; MD Anderson Credentials
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Subtle Scroll Down Indicator */}
+      <a
+        href="#specialists"
+        aria-label="Scroll to specialists"
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-white/50 hover:text-[#D4AF37] transition-colors"
       >
-        <motion.span
-          aria-hidden="true"
-          className="block h-10 w-px bg-white/30"
-          animate={{ y: [0, 8, 0] }}
-          transition={{
-            duration: 2,
-            ease: "easeInOut",
-            repeat: Infinity,
-          }}
-        />
-        <ChevronDown
-          aria-hidden="true"
-          className="h-4 w-4 text-white/40"
-          strokeWidth={1.25}
-        />
-      </motion.a>
+        <span className="text-[0.6rem] font-medium tracking-[0.2em] uppercase">Scroll</span>
+        <ChevronDown className="h-4 w-4 animate-bounce" />
+      </a>
     </section>
   );
 }
