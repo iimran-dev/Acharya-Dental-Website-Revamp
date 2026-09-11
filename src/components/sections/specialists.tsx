@@ -1,19 +1,28 @@
 "use client";
 
 import * as React from "react";
-import { Check, ArrowRight, Award, GraduationCap, Phone, Mail, X } from "lucide-react";
+import { Check, Award, GraduationCap, Phone, Mail } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { SPECIALISTS, BRAND } from "@/lib/content";
-import { cn } from "@/lib/utils";
+import { SPECIALISTS } from "@/lib/content";
 
 type Specialist = (typeof SPECIALISTS)[number];
+
+const SPECIALIST_ROLES: Record<string, string[]> = {
+  "dr-vijailakshmi-acharya": [
+    "Prosthodontist & Implantologist",
+    "Specialist in Full Mouth Rehabilitation",
+  ],
+  "dr-varun-acharya": [
+    "Prosthodontist & Implantologist",
+    "Specialist in Cosmetic & Implant Dentistry",
+  ],
+};
 
 function SpecialistProfileModal({ specialist }: { specialist: Specialist }) {
   return (
@@ -90,80 +99,48 @@ function SpecialistProfileModal({ specialist }: { specialist: Specialist }) {
 }
 
 function SpecialistCard({ specialist }: { specialist: Specialist }) {
-  const isDark = specialist.theme === "navy";
+  const specialties = SPECIALIST_ROLES[specialist.id] || [
+    "Prosthodontist & Implantologist",
+  ];
 
   return (
     <Dialog>
-      <div
-        className={cn(
-          "group relative rounded-2xl overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.12)] border transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(16,35,63,0.22)]",
-          isDark
-            ? "bg-[#091528] border-white/10 text-white"
-            : "bg-[#0B1A30] border-white/10 text-white"
-        )}
-      >
-        {/* Top Right Gold Monogram Badge */}
-        <div className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-[#D4AF37]/90 text-[#071120] shadow-md backdrop-blur-sm">
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2C8 2 5 6 5 11c0 4 2 8 4 10 1 1 2 1 3 1s2 0 3-1c2-2 4-6 4-10 0-5-3-9-7-9Z" />
-            <path d="M12 6v6" />
-          </svg>
-        </div>
-
-        {/* Portrait Image Container */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900">
+      <DialogTrigger asChild>
+        <div className="group relative w-full aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] max-h-[520px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_12px_35px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(16,35,63,0.22)] flex flex-col justify-end bg-[#0B1A2D] cursor-pointer">
+          {/* Full-bleed Portrait Image with Natural Framing */}
           <img
             src={specialist.image}
             alt={`${specialist.name} — ${specialist.role}`}
-            className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover object-[center_top] transition-transform duration-700 ease-out group-hover:scale-105"
             loading="lazy"
           />
-          {/* Subtle bottom vignette gradient to seamlessly blend with card info */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#091528] via-[#091528]/40 to-transparent" />
-        </div>
 
-        {/* Card Content */}
-        <div className="p-6 sm:p-7 relative z-10 flex flex-col justify-between">
-          <div>
+          {/* Card Content Plate: 100% text visibility without any gradients */}
+          <div className="relative z-10 m-3 sm:m-4 rounded-2xl bg-[#071322]/90 backdrop-blur-md p-4 sm:p-5 border border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.35)] flex flex-col justify-end text-left transition-all duration-300 group-hover:bg-[#071322]/95 group-hover:border-white/25">
             {/* Name */}
-            <h3 className="font-[var(--font-playfair)] text-2xl sm:text-[1.7rem] font-bold text-white tracking-tight">
+            <h3 className="font-[var(--font-playfair)] text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
               {specialist.name}
             </h3>
 
-            {/* Credentials */}
-            <p className="mt-1 text-[0.72rem] sm:text-[0.76rem] font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+            {/* Qualification */}
+            <p className="mt-1 text-[0.68rem] sm:text-[0.74rem] font-semibold uppercase tracking-wider text-[#D4AF37]">
               {specialist.credentials}
             </p>
 
-            {/* Checklist items */}
-            <div className="mt-5 space-y-2.5">
-              {specialist.highlights.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-2.5">
-                  <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#D4AF37]/20 text-[#D4AF37]">
-                    <Check className="h-2.5 w-2.5 stroke-[3]" />
-                  </div>
-                  <span className="text-xs sm:text-[0.82rem] font-medium text-white/90">
+            {/* Specialists */}
+            <div className="mt-2.5 space-y-1.5">
+              {specialties.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <Check className="h-3.5 w-3.5 text-[#38BDF8] shrink-0 stroke-[2.5]" />
+                  <span className="text-xs sm:text-[0.82rem] font-normal text-white/95">
                     {item}
                   </span>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* View Profile Action Link */}
-          <div className="mt-6 pt-5 border-t border-white/10">
-            <DialogTrigger asChild>
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 text-xs sm:text-[0.8rem] font-bold uppercase tracking-wider text-[#D4AF37] hover:text-[#F3E5AB] transition-colors group/btn"
-              >
-                <span>View Profile</span>
-                <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-              </button>
-            </DialogTrigger>
-          </div>
         </div>
-      </div>
+      </DialogTrigger>
 
       {/* Profile Details Dialog */}
       <SpecialistProfileModal specialist={specialist} />
@@ -176,41 +153,45 @@ export function Specialists() {
     <section
       id="about"
       aria-label="Meet Our Specialists"
-      className="py-20 lg:py-28 bg-[#FAF9F6] text-[#10233F]"
+      className="py-16 sm:py-20 lg:py-24 bg-white text-[#10233F] overflow-hidden"
     >
-      <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-12">
-        {/* Section Header: Eyebrow, Title, Subtitle, and Action Button */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 sm:pb-16 border-b border-gray-200">
-          <div className="max-w-2xl">
-            <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-[#0284C7] uppercase">
-              Meet Our Specialists
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 xl:px-12">
+        {/* 3-Column Layout: Left Info Block + 2 Specialist Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-6 xl:gap-8 items-center">
+          {/* Left Column: Eyebrow, Title, Accent Bar, Description, and Button */}
+          <div className="md:col-span-2 lg:col-span-4 flex flex-col justify-center pr-0 lg:pr-4">
+            <span className="text-xs sm:text-[0.82rem] font-bold tracking-[0.16em] text-[#0284C7] uppercase">
+              MEET OUR SPECIALISTS
             </span>
-            <h2 className="font-[var(--font-playfair)] text-3xl sm:text-4xl md:text-5xl font-bold text-[#10233F] tracking-tight mt-2">
-              Experience. Expertise. Compassion.
+
+            <h2 className="font-[var(--font-playfair)] text-3xl sm:text-4xl md:text-[2.5rem] lg:text-[2.65rem] font-bold text-[#10233F] tracking-tight leading-[1.12] mt-3">
+              Experience. Expertise. <br />
+              Compassion.
             </h2>
-            <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed max-w-xl">
-              A mother-and-son leadership team dedicated to delivering world-class dental care
-              with precision, technology and a personal touch.
+
+            {/* Cyan Accent Bar */}
+            <div className="w-12 h-[3px] bg-[#0284C7] rounded-full mt-4 mb-6" />
+
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed max-w-md">
+              A father-daughter team dedicated to delivering world-class dental care with precision,
+              technology and a personal touch.
             </p>
+
+            <div className="mt-8 sm:mt-10">
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center px-7 py-3.5 rounded-md bg-[#0A192F] hover:bg-[#122B4F] text-white text-xs sm:text-sm font-bold tracking-wider uppercase transition-all duration-300 shadow-md active:scale-95"
+              >
+                VIEW ALL DOCTORS
+              </a>
+            </div>
           </div>
 
-          <div className="shrink-0">
-            <a
-              href="#specialists-grid"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#0B162A] text-white hover:bg-[#1E3A5F] text-xs sm:text-sm font-semibold tracking-wider uppercase transition-colors shadow-md"
-            >
-              View All Doctors
-            </a>
-          </div>
-        </div>
-
-        {/* Specialists Two-Card Grid */}
-        <div
-          id="specialists-grid"
-          className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-5xl mx-auto"
-        >
+          {/* Right Two Columns: Doctor Cards */}
           {SPECIALISTS.map((specialist) => (
-            <SpecialistCard key={specialist.id} specialist={specialist} />
+            <div key={specialist.id} className="md:col-span-1 lg:col-span-4 flex justify-center">
+              <SpecialistCard specialist={specialist} />
+            </div>
           ))}
         </div>
       </div>

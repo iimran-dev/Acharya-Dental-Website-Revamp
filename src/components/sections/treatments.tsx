@@ -96,7 +96,7 @@ function TreatmentCard({ treatment }: { treatment: Treatment }) {
   return (
     <Dialog>
       <div className="group relative flex flex-col justify-between rounded-2xl overflow-hidden bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-100/80 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(16,35,63,0.14)]">
-        {/* Top Section: Photo with Circular Blue Icon Badge */}
+        {/* Top Section: Photo */}
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
           <img
             src={treatment.image}
@@ -104,11 +104,6 @@ function TreatmentCard({ treatment }: { treatment: Treatment }) {
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             loading="lazy"
           />
-
-          {/* Circular Blue Icon Badge overlapping top-left */}
-          <div className="absolute top-4 left-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-[#0284C7] text-white shadow-lg shadow-[#0284C7]/30 border-2 border-white">
-            <TreatmentIcon type={treatment.iconType} className="h-5 w-5" />
-          </div>
         </div>
 
         {/* Bottom Section: Title, Description, Gold Learn More */}
@@ -188,15 +183,13 @@ export function TreatmentShowcase() {
                     key={t.id}
                     className="p-4 rounded-xl border border-gray-100 hover:border-[#0284C7]/40 hover:bg-[#F0F9FF]/30 transition-all flex items-start gap-3.5"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0284C7]/10 text-[#0284C7]">
-                      <TreatmentIcon type={t.iconType} className="h-5 w-5" />
-                    </div>
+
                     <div>
                       <h4 className="font-[var(--font-playfair)] text-base font-bold text-[#10233F]">
                         {t.name}
                       </h4>
                       <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                        {t.tagline || t.description}
+                        {t.tagline}
                       </p>
                     </div>
                   </div>
