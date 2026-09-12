@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Plane, Hotel, CalendarClock, Video, ArrowRight, ShieldCheck, Clock } from "lucide-react";
+import { Plane, Hotel, CalendarClock, Video, ArrowRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { BRAND, INTERNATIONAL_FEATURES } from "@/lib/content";
+import { BRAND } from "@/lib/content";
+import { assetPath } from "@/lib/utils";
 
 const SERVICES = [
   {
@@ -43,32 +44,32 @@ export function InternationalPatients() {
       aria-label="International Patients"
       className="relative overflow-hidden bg-[#071120] text-white"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[500px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[340px] lg:min-h-[380px]">
         {/* Left Side: Dark Navy Information & Concierge Services (Span 7) */}
-        <div className="lg:col-span-7 flex flex-col justify-center px-6 py-16 sm:px-10 lg:px-16 xl:px-20 z-10">
-          <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-[#38BDF8] uppercase">
+        <div className="lg:col-span-7 flex flex-col justify-center px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12 z-10">
+          <span className="text-[0.68rem] sm:text-xs font-bold tracking-[0.2em] text-[#38BDF8] uppercase">
             International Patients
           </span>
 
-          <h2 className="font-[var(--font-playfair)] text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mt-3 leading-tight">
+          <h2 className="font-[var(--font-playfair)] text-2xl sm:text-3xl lg:text-[2.2rem] font-bold text-white tracking-tight mt-2 leading-tight">
             Your Smile. Our Expertise. <br />
             <span className="text-[#F1E5D1]">Seamless Experience.</span>
           </h2>
 
-          <p className="mt-4 text-sm sm:text-base text-white/80 max-w-lg leading-relaxed">
+          <p className="mt-2.5 text-xs sm:text-sm text-white/80 max-w-lg leading-relaxed">
             Complete support for your dental journey in Chennai. From preliminary virtual consultations to airport reception and customized treatment timelines.
           </p>
 
           {/* 4 Feature Icons Row / Grid */}
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6">
+          <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {SERVICES.map((s, idx) => {
               const Icon = s.icon;
               return (
-                <div key={idx} className="flex flex-col items-start gap-2.5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]">
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                <div key={idx} className="flex flex-col items-start gap-2">
+                  <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37]">
+                    <Icon className="h-4 w-4" strokeWidth={1.75} />
                   </div>
-                  <span className="text-xs font-semibold text-white/90 leading-snug">
+                  <span className="text-[0.72rem] sm:text-xs font-semibold text-white/90 leading-tight">
                     {s.title}
                   </span>
                 </div>
@@ -77,28 +78,33 @@ export function InternationalPatients() {
           </div>
         </div>
 
-        {/* Right Side: Airplane Wing Golden Sunset Photo & Know More Button (Span 5) */}
-        <div className="lg:col-span-5 relative min-h-[300px] lg:min-h-full flex items-end justify-end p-8 sm:p-12 overflow-hidden">
-          {/* Airplane Wing Photographic Background */}
+        {/* Right Side: Airplane Golden Sunset Photo & Know More Button (Span 5) */}
+        <div className="lg:col-span-5 relative min-h-[220px] sm:min-h-[260px] lg:min-h-full flex items-end justify-end p-6 sm:p-8 lg:p-10 overflow-hidden">
+          {/* Airplane Sunset Photographic Background */}
           <img
-            src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1600&q=85"
-            alt="International flight wing over golden sunset clouds"
+            src={assetPath("/images/acharyadental/plane-sunset.jpg")}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src =
+                "https://plus.unsplash.com/premium_photo-1725408032701-45831d3e6ad0?auto=format&fit=crop&w=1600&q=85";
+            }}
+            alt="International flight landing at golden sunset"
             className="absolute inset-0 h-full w-full object-cover object-center"
             loading="lazy"
           />
 
-          {/* Gradient overlay to smoothly bridge left dark navy */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#071120] via-[#071120]/30 to-transparent lg:block" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          {/* Gradient overlays to smoothly bridge left dark navy */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#071120] via-[#071120]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#071120]/75 via-transparent to-transparent" />
 
-          {/* Know More CTA Button matching reference mockup */}
+          {/* Know More CTA Button */}
           <Dialog open={modalOpen} onOpenChange={setModalOpen}>
             <DialogTrigger asChild>
               <button
                 type="button"
-                className="relative z-10 inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#071120] font-bold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95"
+                className="relative z-10 inline-flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-lg bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#071120] font-bold text-xs tracking-wider uppercase transition-all duration-200 shadow-[0_4px_16px_rgba(0,0,0,0.35)] active:scale-95 cursor-pointer"
               >
                 Know More
+                <ArrowRight className="h-3.5 w-3.5" />
               </button>
             </DialogTrigger>
 

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { MapPin, Phone, Mail, Clock, ArrowUpRight } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, ArrowUpRight, Award } from "lucide-react";
 import { AcharyaLogo, WhatsAppIcon } from "@/components/site/icons";
 import { BRAND, ACCREDITATIONS, ALL_TREATMENTS } from "@/lib/content";
 
@@ -10,32 +10,46 @@ export function Footer() {
   return (
     <footer className="bg-[#050C17] border-t border-white/10 text-white">
       {/* Accreditations & Affiliations Bar */}
-      <div className="py-10 border-b border-white/10 bg-[#071120]">
+      <div className="py-8 sm:py-10 border-b border-white/10 bg-[#071120]">
         <div className="mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <span className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
-                Accreditations &amp; Global Affiliations
-              </span>
-              <p className="text-xs text-white/60 mt-0.5">
-                Recognized by leading dental boards and international dental colleges
-              </p>
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 lg:gap-8">
+            {/* Left Title & Credibility Mark */}
+            <div className="flex items-center gap-3.5 shrink-0 text-center xl:text-left justify-center xl:justify-start">
+              <div className="hidden sm:grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 text-[#D4AF37]">
+                <Award className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="flex items-center justify-center xl:justify-start gap-2">
+                  <span className="h-px w-4 bg-[#D4AF37]" />
+                  <span className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[#D4AF37]">
+                    Accreditations &amp; Global Affiliations
+                  </span>
+                </div>
+                <p className="text-xs text-white/70 mt-0.5">
+                  Board-certified specialists recognized by premier dental colleges worldwide
+                </p>
+              </div>
             </div>
 
-            {/* Accreditation Logos */}
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
+            {/* 5 Clean Credential Badges — Perfectly Aligned */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 items-stretch justify-center w-full xl:w-auto">
               {ACCREDITATIONS.map((acc, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-                  title={acc.name}
+                  className="group relative flex flex-col items-center justify-center rounded-xl bg-white p-2.5 sm:p-3 shadow-xs border border-white/20 transition-all duration-300 hover:shadow-lg hover:border-[#D4AF37] hover:-translate-y-0.5 min-w-[125px] sm:min-w-[135px]"
+                  title={`${acc.name} — ${acc.desc}`}
                 >
-                  <img
-                    src={acc.logo}
-                    alt={acc.name}
-                    className="h-9 w-auto max-w-[110px] object-contain brightness-90 hover:brightness-100 transition-all"
-                    loading="lazy"
-                  />
+                  <div className="h-8 sm:h-9 w-full flex items-center justify-center">
+                    <img
+                      src={acc.logo}
+                      alt={acc.name}
+                      className="max-h-full max-w-[115px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  </div>
+                  <span className="mt-1.5 font-[var(--font-inter)] text-[0.62rem] font-semibold text-[#0B1B30]/75 tracking-tight text-center line-clamp-1">
+                    {acc.desc}
+                  </span>
                 </div>
               ))}
             </div>

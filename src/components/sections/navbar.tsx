@@ -2,8 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Phone, ChevronDown, Calendar, ArrowRight } from "lucide-react";
+import { Menu, Phone, Calendar, ArrowRight } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,14 +12,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { WhatsAppIcon } from "@/components/site/icons";
-import { NAV_LINKS, BRAND, SIGNATURE_TREATMENTS } from "@/lib/content";
+import { NAV_LINKS, BRAND } from "@/lib/content";
 import { cn, assetPath } from "@/lib/utils";
 
 const SCROLL_THRESHOLD = 40;
 
 export function Navbar() {
   const [scrolled, setScrolled] = React.useState(false);
-  const [treatmentsOpen, setTreatmentsOpen] = React.useState(false);
 
   React.useEffect(() => {
     const onScroll = () => {
@@ -52,7 +50,7 @@ export function Navbar() {
       )}
       aria-label="Site header"
     >
-      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-2 sm:gap-4 px-4 sm:px-6 lg:px-8 xl:px-10">
         {/* =========================================================
             1. Left: Official Brand Logo (Compact & Crisp)
             ========================================================= */}
@@ -79,114 +77,31 @@ export function Navbar() {
         </Link>
 
         {/* =========================================================
-            2. Center: Navigation Links (Small, Evenly Spread, Single-Line)
+            2. Center: Sequential Navigation Links (Single-Line, No Dropdowns)
+            Sequence matches page.tsx section order:
+            Specialists -> Treatments -> Why Us -> Gallery -> 
+            International -> Testimonials -> The Clinic -> Contact
             ========================================================= */}
         <nav
           aria-label="Primary navigation"
-          className="hidden lg:flex items-center justify-center gap-3.5 xl:gap-5 2xl:gap-7 flex-1 mx-2 xl:mx-4"
+          className="hidden xl:flex items-center justify-center gap-1 2xl:gap-2.5 flex-1 mx-2"
         >
-          {NAV_LINKS.map((link) => {
-            if (link.hasDropdown) {
-              return (
-                <div
-                  key={link.label}
-                  className="relative shrink-0"
-                  onMouseEnter={() => setTreatmentsOpen(true)}
-                  onMouseLeave={() => setTreatmentsOpen(false)}
-                >
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="group inline-flex items-center gap-1 py-1.5 text-[11px] xl:text-[11.5px] 2xl:text-xs font-semibold tracking-[0.12em] uppercase text-white/85 hover:text-[#D4AF37] transition-colors whitespace-nowrap"
-                  >
-                    <span>{link.label}</span>
-                    <ChevronDown
-                      className={cn(
-                        "h-3 w-3 text-white/50 transition-transform duration-200 group-hover:text-[#D4AF37]",
-                        treatmentsOpen && "rotate-180 text-[#D4AF37]"
-                      )}
-                    />
-                  </a>
-
-                  {/* Treatments Dropdown Menu */}
-                  <AnimatePresence>
-                    {treatmentsOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 5, scale: 0.98 }}
-                        transition={{ duration: 0.16, ease: "easeOut" }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 w-64 rounded-xl bg-[#08172E]/98 border border-white/12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2.5 z-50 backdrop-blur-2xl"
-                      >
-                        <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-white/8 mb-1">
-                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[#38BDF8]">
-                            Signature Procedures
-                          </span>
-                          <span className="text-[0.58rem] text-white/40 font-mono">
-                            4 Core
-                          </span>
-                        </div>
-
-                        <div className="space-y-0.5">
-                          {SIGNATURE_TREATMENTS.map((t) => (
-                            <a
-                              key={t.id}
-                              href="#treatments"
-                              onClick={(e) => {
-                                setTreatmentsOpen(false);
-                                handleNavClick(e, "#treatments");
-                              }}
-                              className="group/item flex flex-col px-2.5 py-1.5 rounded-lg text-left hover:bg-white/8 transition-colors"
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold text-white group-hover/item:text-[#D4AF37] transition-colors whitespace-nowrap">
-                                  {t.name}
-                                </span>
-                                <ArrowRight className="h-3 w-3 text-white/0 -translate-x-1 group-hover/item:text-[#D4AF37] group-hover/item:translate-x-0 group-hover/item:opacity-100 transition-all" />
-                              </div>
-                              <span className="text-[0.65rem] text-white/50 line-clamp-1 mt-0.5">
-                                {t.tagline}
-                              </span>
-                            </a>
-                          ))}
-                        </div>
-
-                        <div className="mt-1.5 pt-1.5 border-t border-white/8 px-1">
-                          <a
-                            href="#treatments"
-                            onClick={(e) => {
-                              setTreatmentsOpen(false);
-                              handleNavClick(e, "#treatments");
-                            }}
-                            className="block w-full py-1 text-center text-[0.65rem] font-bold uppercase tracking-wider text-[#38BDF8] hover:text-white transition-colors whitespace-nowrap"
-                          >
-                            Explore All Services &rarr;
-                          </a>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            }
-
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="shrink-0 whitespace-nowrap py-1.5 text-[11px] xl:text-[11.5px] 2xl:text-xs font-semibold tracking-[0.12em] uppercase text-white/85 hover:text-[#D4AF37] transition-colors"
-              >
-                {link.label}
-              </a>
-            );
-          })}
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              className="shrink-0 whitespace-nowrap py-1.5 px-2 rounded-md text-[11px] 2xl:text-xs font-semibold tracking-[0.08em] uppercase text-white/80 hover:text-[#D4AF37] hover:bg-white/[0.05] transition-all"
+            >
+              {link.label}
+            </a>
+          ))}
         </nav>
 
         {/* =========================================================
-            3. Right: Contact Direct Lines & Action CTA (Single-Line & Spaced)
+            3. Right: Contact Direct Lines & Action CTA
             ========================================================= */}
-        <div className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0 pl-2">
+        <div className="hidden lg:flex items-center gap-2.5 xl:gap-3.5 shrink-0 pl-2">
           {/* Phone Link */}
           <a
             href={BRAND.phonePrimaryHref}
@@ -213,24 +128,12 @@ export function Navbar() {
             <WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366] group-hover:scale-110 transition-transform duration-200" />
             <span className="whitespace-nowrap">WhatsApp Us</span>
           </a>
-
-          {/* Hairline Divider */}
-          <span className="h-3.5 w-px bg-white/20 shrink-0" aria-hidden="true" />
-
-          {/* Primary Book Appointment Button */}
-          <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, "#contact")}
-            className="whitespace-nowrap shrink-0 inline-flex items-center justify-center px-4 py-2 rounded-md bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#0B162A] text-[11px] xl:text-xs font-bold tracking-[0.1em] uppercase transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-95 active:translate-y-0"
-          >
-            Book Appointment
-          </a>
         </div>
 
         {/* =========================================================
-            4. Mobile Viewport Actions & Drawer Menu
+            4. Mobile & Tablet Drawer Menu Trigger
             ========================================================= */}
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-2 xl:hidden">
           <a
             href="#contact"
             onClick={(e) => handleNavClick(e, "#contact")}
@@ -244,7 +147,7 @@ export function Navbar() {
               <button
                 type="button"
                 aria-label="Open mobile navigation menu"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors cursor-pointer"
               >
                 <Menu className="h-4.5 w-4.5" />
               </button>
@@ -274,16 +177,21 @@ export function Navbar() {
                     />
                   </div>
 
-                  {/* Drawer Navigation Links */}
+                  {/* Drawer Navigation Links in exact page sequence */}
                   <nav className="mt-5 flex flex-col gap-1">
-                    {NAV_LINKS.map((link) => (
+                    {NAV_LINKS.map((link, idx) => (
                       <SheetClose asChild key={link.href}>
                         <a
                           href={link.href}
                           onClick={(e) => handleNavClick(e, link.href)}
-                          className="flex items-center justify-between py-2.5 px-2 rounded-lg text-xs font-semibold tracking-wider uppercase text-white/85 hover:text-[#D4AF37] hover:bg-white/5 transition-colors whitespace-nowrap"
+                          className="flex items-center justify-between py-2.5 px-3 rounded-lg text-xs font-semibold tracking-wider uppercase text-white/85 hover:text-[#D4AF37] hover:bg-white/5 transition-colors whitespace-nowrap"
                         >
-                          <span>{link.label}</span>
+                          <span className="flex items-center gap-2.5">
+                            <span className="text-[0.65rem] text-[var(--gold)] font-mono">
+                              {String(idx + 1).padStart(2, "0")}
+                            </span>
+                            <span>{link.label}</span>
+                          </span>
                           <ArrowRight className="h-3.5 w-3.5 text-white/30" />
                         </a>
                       </SheetClose>

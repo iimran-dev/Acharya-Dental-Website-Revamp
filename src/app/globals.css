@@ -9,10 +9,12 @@
    ============================================================ */
 
 @theme inline {
-  /* Fonts */
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-playfair);
-  --font-mono: var(--font-inter);
+  /* Fonts — Unified Modern Typography System (Plus Jakarta Sans throughout) */
+  --font-sans: var(--font-plus-jakarta, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
+  --font-display: var(--font-plus-jakarta, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
+  --font-mono: var(--font-plus-jakarta, monospace);
+  --font-playfair: var(--font-plus-jakarta, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
+  --font-inter: var(--font-plus-jakarta, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif);
 
   /* Brand color tokens */
   --color-navy: #10233F;
@@ -93,16 +95,16 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-sans);
     color: var(--ink);
     background-color: var(--warm-white);
   }
 
-  /* Editorial heading typography */
+  /* Modern architectural heading typography */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-playfair), Georgia, serif;
-    font-weight: 500;
-    letter-spacing: -0.015em;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
 
   /* Selection */
@@ -126,9 +128,9 @@
 @layer components {
   /* Eyebrow label — gold uppercase, refined */
   .eyebrow {
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-sans);
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--gold);
@@ -138,29 +140,29 @@
     color: var(--gold-soft);
   }
 
-  /* Display headings */
+  /* Modern architectural display headings with tight optical tracking */
   .display-1 {
-    font-family: var(--font-playfair), Georgia, serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-family: var(--font-sans);
+    font-size: clamp(2.5rem, 5.5vw, 4.75rem);
     line-height: 1.04;
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    letter-spacing: -0.035em;
   }
 
   .display-2 {
-    font-family: var(--font-playfair), Georgia, serif;
-    font-size: clamp(2rem, 4.5vw, 3.5rem);
-    line-height: 1.08;
-    font-weight: 500;
-    letter-spacing: -0.015em;
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 4.2vw, 3.25rem);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
 
   .display-3 {
-    font-family: var(--font-playfair), Georgia, serif;
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
-    line-height: 1.15;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+    font-family: var(--font-sans);
+    font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+    line-height: 1.18;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   /* Body lead */
@@ -211,8 +213,8 @@
 
   /* Premium button base */
   .btn-lux {
-    font-family: var(--font-inter), sans-serif;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-weight: 700;
     font-size: 0.875rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;

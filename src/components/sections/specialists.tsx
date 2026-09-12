@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, Award, GraduationCap, Phone, Mail } from "lucide-react";
+import { Award, GraduationCap, Phone, Mail, ArrowRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,18 +16,18 @@ type Specialist = (typeof SPECIALISTS)[number];
 const SPECIALIST_ROLES: Record<string, string[]> = {
   "dr-vijailakshmi-acharya": [
     "Prosthodontist & Implantologist",
-    "Specialist in Full Mouth Rehabilitation",
+    "Full Mouth Rehabilitation",
   ],
   "dr-varun-acharya": [
     "Prosthodontist & Implantologist",
-    "Specialist in Cosmetic & Implant Dentistry",
+    "Cosmetic & Implant Dentistry",
   ],
 };
 
 function SpecialistProfileModal({ specialist }: { specialist: Specialist }) {
   return (
     <DialogContent className="max-w-2xl bg-[#081225] border border-white/15 text-white p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
-      <DialogTitle className="font-[var(--font-playfair)] text-2xl sm:text-3xl font-bold text-white">
+      <DialogTitle className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
         {specialist.name}
       </DialogTitle>
       <div className="text-xs sm:text-sm font-semibold tracking-wider text-[#D4AF37] uppercase mt-1">
@@ -106,37 +106,54 @@ function SpecialistCard({ specialist }: { specialist: Specialist }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="group relative w-full aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] max-h-[520px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_12px_35px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(16,35,63,0.22)] flex flex-col justify-end bg-[#0B1A2D] cursor-pointer">
-          {/* Full-bleed Portrait Image with Natural Framing */}
-          <img
-            src={specialist.image}
-            alt={`${specialist.name} — ${specialist.role}`}
-            className="absolute inset-0 h-full w-full object-cover object-[center_top] transition-transform duration-700 ease-out group-hover:scale-105"
-            loading="lazy"
-          />
+        <div className="group relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/90 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_45px_rgba(16,35,63,0.14)] hover:border-[#D4AF37]/60 transition-all duration-500 flex flex-col cursor-pointer text-left">
+          {/* Portrait Container — Unobstructed, natural framing */}
+          <div className="relative aspect-[4/4.2] sm:aspect-[4/4] w-full overflow-hidden bg-slate-900">
+            <img
+              src={specialist.image}
+              alt={`${specialist.name} — ${specialist.role}`}
+              className="h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
+              loading="lazy"
+            />
+            {/* Subtle top role badge */}
 
-          {/* Card Content Plate: 100% text visibility without any gradients */}
-          <div className="relative z-10 m-3 sm:m-4 rounded-2xl bg-[#071322]/90 backdrop-blur-md p-4 sm:p-5 border border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.35)] flex flex-col justify-end text-left transition-all duration-300 group-hover:bg-[#071322]/95 group-hover:border-white/25">
-            {/* Name */}
-            <h3 className="font-[var(--font-playfair)] text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
-              {specialist.name}
-            </h3>
+          </div>
 
-            {/* Qualification */}
-            <p className="mt-1 text-[0.68rem] sm:text-[0.74rem] font-semibold uppercase tracking-wider text-[#D4AF37]">
-              {specialist.credentials}
-            </p>
+          {/* Dedicated Typography Panel (clean, senior-level editorial design) */}
+          <div className="p-5 sm:p-6 flex flex-col justify-between flex-1 bg-white">
+            <div>
+              {/* Doctor Name */}
+              <h3 className="text-xl sm:text-[1.35rem] font-bold text-[#10233F] tracking-tight group-hover:text-[#0284C7] transition-colors">
+                {specialist.name}
+              </h3>
 
-            {/* Specialists */}
-            <div className="mt-2.5 space-y-1.5">
-              {specialties.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-[#38BDF8] shrink-0 stroke-[2.5]" />
-                  <span className="text-xs sm:text-[0.82rem] font-normal text-white/95">
+              {/* Degrees / Post-nominals */}
+              <p className="mt-1 text-[0.72rem] sm:text-xs font-bold uppercase tracking-wider text-[#D4AF37]">
+                {specialist.credentials}
+              </p>
+
+              {/* Specialization Tags — Clean modern pills (No AI-style checkmarks) */}
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {specialties.map((item, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center rounded-md bg-slate-50 px-2.5 py-1 text-[0.72rem] font-medium text-slate-700 border border-slate-200/70"
+                  >
                     {item}
                   </span>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Profile Affordance */}
+            <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0284C7] group-hover:text-[#10233F] transition-colors inline-flex items-center gap-1.5">
+                View Clinical Credentials
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </span>
+              <span className="text-[0.68rem] text-slate-400 font-medium">
+                {specialist.id === "dr-vijailakshmi-acharya" ? "50+ Yrs Exp" : "U.S. Board-Certified"}
+              </span>
             </div>
           </div>
         </div>
@@ -164,7 +181,7 @@ export function Specialists() {
               MEET OUR SPECIALISTS
             </span>
 
-            <h2 className="font-[var(--font-playfair)] text-3xl sm:text-4xl md:text-[2.5rem] lg:text-[2.65rem] font-bold text-[#10233F] tracking-tight leading-[1.12] mt-3">
+            <h2 className="text-3xl sm:text-4xl md:text-[2.5rem] lg:text-[2.65rem] font-bold text-[#10233F] tracking-tight leading-[1.12] mt-3">
               Experience. Expertise. <br />
               Compassion.
             </h2>

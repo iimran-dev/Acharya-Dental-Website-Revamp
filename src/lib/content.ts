@@ -59,15 +59,14 @@ export const BRAND = {
 } as const;
 
 export const NAV_LINKS = [
-  { label: "ABOUT US", href: "#about" },
-  {
-    label: "TREATMENTS",
-    href: "#treatments",
-    hasDropdown: true,
-  },
-  { label: "INTERNATIONAL PATIENTS", href: "#international" },
+  { label: "SPECIALISTS", href: "#about" },
+  { label: "TREATMENTS", href: "#treatments" },
+  { label: "WHY US", href: "#why-choose-us" },
   { label: "GALLERY", href: "#gallery" },
+  { label: "INTERNATIONAL", href: "#international" },
   { label: "TESTIMONIALS", href: "#testimonials" },
+  { label: "THE CLINIC", href: "#clinic" },
+  { label: "CONTACT", href: "#contact" },
 ] as const;
 
 export const HERO_METRICS = [
